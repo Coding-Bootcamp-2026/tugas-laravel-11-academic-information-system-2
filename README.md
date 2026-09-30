@@ -42,7 +42,7 @@ Membangun **Sistem Informasi Akademik (SIAKAD)** menggunakan Laravel dengan fitu
 
 ```
 ┌──────────────┐       1:1       ┌──────────────┐
-│    users      │───────────────▶│   profiles    │
+│    users     │───────────────▶│   profiles    │
 │              │                 │              │
 │ id           │       1:1       │ id           │
 │ name         │──────┐          │ user_id (FK) │
@@ -55,8 +55,8 @@ Membangun **Sistem Informasi Akademik (SIAKAD)** menggunakan Laravel dengan fitu
        │ 1:M          │ 1:1
        ▼              ▼
 ┌──────────────┐  ┌──────────────┐     ┌──────────────┐
-│announcements │  │   teachers   │────▶│ departments  │
-│              │  │              │ M:1  │              │
+│announcements │  │   teachers   │───▶│ departments  │
+│              │  │              │ M:1 │              │
 │ id           │  │ id           │     │ id           │
 │ user_id (FK) │  │ user_id (FK) │     │ name         │
 │ title        │  │ department_id│     │ code         │
@@ -79,8 +79,8 @@ Membangun **Sistem Informasi Akademik (SIAKAD)** menggunakan Laravel dengan fitu
                   │ end_time     │     └──────┬───────┘
                   │ timestamps   │            │
                   └──────────────┘            │
-                         ▲                     │ M:M (via enrollments)
-                         │ M:1                 │
+                         ▲                    │ M:M (via enrollments)
+                         │ M:1                │
                   ┌──────────────┐            │
                   │  classrooms  │            │
                   │              │            │
@@ -91,16 +91,16 @@ Membangun **Sistem Informasi Akademik (SIAKAD)** menggunakan Laravel dengan fitu
                   │ timestamps   │     │              │
                   └──────────────┘     │ id           │
                                        │ student_id   │
-┌──────────────┐       1:M            │ course_id    │
-│  categories  │──────────┐           │ academic_year│
-│              │          │           │ semester     │
-│ id           │          ▼           │ status       │
-│ name         │   ┌──────────────┐   │ timestamps   │
-│ description  │   │   courses    │   └──────────────┘
+┌──────────────┐       1:M             │ course_id    │
+│  categories  │──────────┐            │ academic_year│
+│              │          │            │ semester     │
+│ id           │          ▼            │ status       │
+│ name         │   ┌──────────────┐    │ timestamps   │
+│ description  │   │   courses    │    └──────────────┘
 │ timestamps   │   │              │
 └──────────────┘   │ id           │         M:M (via course_tag)
                    │ category_id  │──────────────────┐
-                   │ department_id│                   │
+                   │ department_id│                  │
 ┌──────────────┐   │ code         │         ┌────────▼───────┐
 │    tags      │   │ name         │         │   course_tag   │ (Pivot)
 │              │   │ credits      │         │                │
@@ -111,7 +111,7 @@ Membangun **Sistem Informasi Akademik (SIAKAD)** menggunakan Laravel dengan fitu
 └──────────────┘          │ 1:M
                           ▼
                    ┌──────────────┐       1:M       ┌──────────────┐
-                   │ assignments  │────────────────▶│ submissions  │
+                   │ assignments  │───────────────▶│ submissions  │
                    │              │                 │              │
                    │ id           │                 │ id           │
                    │ course_id(FK)│                 │ assignment_id│
@@ -135,7 +135,7 @@ Membangun **Sistem Informasi Akademik (SIAKAD)** menggunakan Laravel dengan fitu
                    └──────────────┘
 
 ┌────────────────────┐         M:M          ┌────────────────────────┐
-│ extracurriculars   │◀────────────────────▶│ extracurricular_student │ (Pivot)
+│ extracurriculars   │◀───────────────────▶│ extracurricular_student│ (Pivot)
 │                    │                      │                        │
 │ id                 │                      │ extracurricular_id(FK) │
 │ name               │                      │ student_id (FK)        │
@@ -150,14 +150,14 @@ Membangun **Sistem Informasi Akademik (SIAKAD)** menggunakan Laravel dengan fitu
 ### Ringkasan Relasi
 
 #### 🔹 One-to-One (1:1)
-| Tabel A     | Tabel B    | Keterangan                        |
-|-------------|------------|-----------------------------------|
-| `users`     | `profiles` | Setiap user memiliki satu profil  |
-| `users`     | `teachers` | Setiap dosen terhubung satu user  |
+| Tabel A     | Tabel B    | Keterangan                           |
+|-------------|------------|--------------------------------------|
+| `users`     | `profiles` | Setiap user memiliki satu profil     |
+| `users`     | `teachers` | Setiap dosen terhubung satu user     |
 | `users`     | `students` | Setiap mahasiswa terhubung satu user |
 
 #### 🔸 One-to-Many (1:M)
-| Tabel Parent      | Tabel Child      | Keterangan                                    |
+| Tabel Parent       | Tabel Child      | Keterangan                                    |
 |--------------------|------------------|-----------------------------------------------|
 | `departments`      | `teachers`       | Satu jurusan memiliki banyak dosen            |
 | `departments`      | `students`       | Satu jurusan memiliki banyak mahasiswa        |
@@ -183,8 +183,8 @@ Membangun **Sistem Informasi Akademik (SIAKAD)** menggunakan Laravel dengan fitu
 
 ### Role Pengguna
 
-| Role    | Deskripsi                                                                 |
-|---------|---------------------------------------------------------------------------|
+| Role    | Deskripsi                                                                |
+|---------|--------------------------------------------------------------------------|
 | `admin` | Dapat mengakses semua fitur CRUD pada semua modul                        |
 | `user`  | Hanya dapat melihat (Read) data, tidak bisa Create, Update, atau Delete  |
 
@@ -238,14 +238,14 @@ Pastikan sudah terinstall:
 ### 1.2 Buat Project Laravel Baru
 
 ```bash
-composer create-project laravel/laravel siakad-laravel
+laravel new siakad-laravel
 cd siakad-laravel
 ```
 
 ### 1.3 Jalankan Server Development
 
 ```bash
-php artisan serve
+composer run dev
 ```
 
 Buka browser dan akses `http://localhost:8000` untuk memastikan instalasi berhasil.
