@@ -11,46 +11,86 @@ Membangun **Sistem Informasi Akademik (SIAKAD)** menggunakan Laravel dengan fitu
 
 ---
 
-## 📑 Daftar Isi
+## 🧭 Cara Menggunakan Panduan Ini
 
-- [Perancangan Database (ERD)](#-perancangan-database-erd)
-- [Sistem Autentikasi & Autorisasi](#-sistem-autentikasi--autorisasi)
-- [Perancangan Fitur CRUD per Modul](#-perancangan-fitur-crud-per-modul)
-- [TAHAP 1: Install Laravel Project](#tahap-1-install-laravel-project)
-- [TAHAP 2: Buat Database & Sambungkan ke Project](#tahap-2-buat-database--sambungkan-ke-project)
-- [TAHAP 3: Buat Migration](#tahap-3-buat-migration)
-- [TAHAP 4: Buat Model](#tahap-4-buat-model)
-- [TAHAP 5: Isikan Data Dummy (Seeder & Factory)](#tahap-5-isikan-data-dummy-seeder--factory)
-- [TAHAP 6: Buat Route](#tahap-6-buat-route)
-- [TAHAP 7: Buat Controller](#tahap-7-buat-controller)
-- [TAHAP 8: Buat View — Read (Index / Tampilkan Semua Data)](#tahap-8-buat-view--read-index--tampilkan-semua-data)
-- [TAHAP 9: Buat View — Create (Tambah Data Baru)](#tahap-9-buat-view--create-tambah-data-baru)
-- [TAHAP 10: Buat View — Show (Detail Data)](#tahap-10-buat-view--show-detail-data)
-- [TAHAP 11: Buat View — Edit (Update Data)](#tahap-11-buat-view--edit-update-data)
-- [TAHAP 12: Buat Delete Data](#tahap-12-buat-delete-data)
-- [TAHAP 13: Kode Lengkap per Modul](#tahap-13-kode-lengkap-per-modul)
-  - [Modul 01: Jurusan (`departments`)](#modul-01-jurusan-departments)
-  - [Modul 02: Kategori Mata Kuliah (`categories`)](#modul-02-kategori-mata-kuliah-categories)
-  - [Modul 03: Ruang Kelas (`classrooms`)](#modul-03-ruang-kelas-classrooms)
-  - [Modul 04: Tag Mata Kuliah (`tags`)](#modul-04-tag-mata-kuliah-tags)
-  - [Modul 05: Ekstrakurikuler (`extracurriculars`)](#modul-05-ekstrakurikuler-extracurriculars)
-  - [Modul 06: Users (`users`)](#modul-06-users-users)
-  - [Modul 07: Profil Pengguna (`profiles`)](#modul-07-profil-pengguna-profiles)
-  - [Modul 08: Dosen (`teachers`)](#modul-08-dosen-teachers)
-  - [Modul 09: Mahasiswa (`students`)](#modul-09-mahasiswa-students)
-  - [Modul 10: Mata Kuliah (`courses`)](#modul-10-mata-kuliah-courses)
-  - [Modul 11: Jadwal Perkuliahan (`schedules`)](#modul-11-jadwal-perkuliahan-schedules)
-  - [Modul 12: Enrollment (KRS) (`enrollments`)](#modul-12-enrollment-krs-enrollments)
-  - [Modul 13: Tugas (`assignments`)](#modul-13-tugas-assignments)
-  - [Modul 14: Pengumpulan Tugas (`submissions`)](#modul-14-pengumpulan-tugas-submissions)
-  - [Modul 15: Nilai (`grades`)](#modul-15-nilai-grades)
-  - [Modul 16: Pengumuman (dengan Policy) (`announcements`)](#modul-16-pengumuman-dengan-policy-announcements)
-- [Struktur Direktori View Lengkap](#-struktur-direktori-view-lengkap)
-- [Checklist Penyelesaian Tugas](#-checklist-penyelesaian-tugas)
-- [Ringkasan Teknologi yang Digunakan](#-ringkasan-teknologi-yang-digunakan)
-- [Catatan Akhir](#-catatan-akhir)
+Panduan ini disusun **berurutan dari atas ke bawah**. Kerjakan setiap tahap sampai selesai, cek hasilnya, lalu lanjut ke tahap berikutnya.
+
+```
+BAGIAN A  Perancangan Sistem   → baca & pahami ERD, role, dan daftar modul
+BAGIAN B  TAHAP 1 – 6          → project, database, migration, model, seeder, route
+BAGIAN C  TAHAP 7 – 8          → login/logout, Gate, layout, dashboard   (✔ sudah bisa login)
+BAGIAN D  TAHAP 9 – 10         → pahami pola CRUD, lalu kerjakan Modul 01 s/d Modul 16
+BAGIAN E  TAHAP 11             → uji coba akhir & checklist penyelesaian
+LAMPIRAN                       → ringkasan spesifikasi per modul, struktur folder, teknologi
+```
+
+| Tahap | Yang Dikerjakan | Tanda Berhasil |
+|-------|-----------------|----------------|
+| 1 | Install Laravel | Halaman awal Laravel tampil di `http://localhost:8000` |
+| 2 | Buat database & atur `.env` | `php artisan migrate` berjalan tanpa error |
+| 3 | Buat 18 migration | Semua tabel terbentuk di database |
+| 4 | Buat 16 model + relasi | 16 file model ada di `app/Models` |
+| 5 | Isi data dummy (seeder) | `php artisan migrate:fresh --seed` berhasil |
+| 6 | Daftarkan route | `routes/web.php` berisi route login + 16 resource |
+| 7 | Autentikasi & Gate | `AuthController` dan Gate `admin` siap |
+| 8 | Dashboard, layout & login | Bisa login sebagai admin, dashboard tampil, bisa logout |
+| 9 | Pahami pola CRUD | (cukup dibaca) Paham isi 1 controller + 4 view |
+| 10 | Kerjakan 16 modul | Setiap modul lolos checklist **Uji Coba** masing-masing |
+| 11 | Uji coba akhir | Semua checklist penyelesaian tercentang |
+
+> 💡 **Tip:** Kode di TAHAP 7–10 sudah lengkap dan siap disalin. Bagian **Penjelasan** di bawah setiap kode menerangkan *mengapa* kode ditulis seperti itu. Bacalah, karena pola yang sama akan terus diulang.
 
 ---
+
+## 📑 Daftar Isi
+
+- [🧭 Cara Menggunakan Panduan Ini](#-cara-menggunakan-panduan-ini)
+- **[BAGIAN A: Perancangan Sistem](#bagian-a-perancangan-sistem)**
+  - [📐 Perancangan Database (ERD)](#-perancangan-database-erd)
+  - [🔐 Sistem Autentikasi & Autorisasi](#-sistem-autentikasi--autorisasi)
+  - [🛠️ Perancangan Fitur CRUD per Modul](#-perancangan-fitur-crud-per-modul)
+- **[BAGIAN B: Persiapan Project & Database](#bagian-b-persiapan-project--database)**
+  - [TAHAP 1: Install Laravel Project](#tahap-1-install-laravel-project)
+  - [TAHAP 2: Buat Database & Sambungkan ke Project](#tahap-2-buat-database--sambungkan-ke-project)
+  - [TAHAP 3: Buat Migration](#tahap-3-buat-migration)
+  - [TAHAP 4: Buat Model](#tahap-4-buat-model)
+  - [TAHAP 5: Isikan Data Dummy (Seeder & Factory)](#tahap-5-isikan-data-dummy-seeder--factory)
+  - [TAHAP 6: Daftarkan Route](#tahap-6-daftarkan-route)
+- **[BAGIAN C: Fondasi Aplikasi](#bagian-c-fondasi-aplikasi)**
+  - [TAHAP 7: Buat Autentikasi & Gate](#tahap-7-buat-autentikasi--gate)
+  - [TAHAP 8: Buat Dashboard, Layout & Halaman Login](#tahap-8-buat-dashboard-layout--halaman-login)
+- **[BAGIAN D: Membangun 16 Modul CRUD](#bagian-d-membangun-16-modul-crud)**
+  - [TAHAP 9: Pahami Pola CRUD Sebelum Mulai](#tahap-9-pahami-pola-crud-sebelum-mulai)
+  - [TAHAP 10: Kerjakan 16 Modul CRUD Satu per Satu](#tahap-10-kerjakan-16-modul-crud-satu-per-satu)
+    - [Modul 01: Jurusan (`departments`)](#modul-01-jurusan-departments)
+    - [Modul 02: Kategori Mata Kuliah (`categories`)](#modul-02-kategori-mata-kuliah-categories)
+    - [Modul 03: Ruang Kelas (`classrooms`)](#modul-03-ruang-kelas-classrooms)
+    - [Modul 04: Tag Mata Kuliah (`tags`)](#modul-04-tag-mata-kuliah-tags)
+    - [Modul 05: Ekstrakurikuler (`extracurriculars`)](#modul-05-ekstrakurikuler-extracurriculars)
+    - [Modul 06: Users (`users`)](#modul-06-users-users)
+    - [Modul 07: Profil Pengguna (`profiles`)](#modul-07-profil-pengguna-profiles)
+    - [Modul 08: Dosen (`teachers`)](#modul-08-dosen-teachers)
+    - [Modul 09: Mahasiswa (`students`)](#modul-09-mahasiswa-students)
+    - [Modul 10: Mata Kuliah (`courses`)](#modul-10-mata-kuliah-courses)
+    - [Modul 11: Jadwal Perkuliahan (`schedules`)](#modul-11-jadwal-perkuliahan-schedules)
+    - [Modul 12: Enrollment (KRS) (`enrollments`)](#modul-12-enrollment-krs-enrollments)
+    - [Modul 13: Tugas (`assignments`)](#modul-13-tugas-assignments)
+    - [Modul 14: Pengumpulan Tugas (`submissions`)](#modul-14-pengumpulan-tugas-submissions)
+    - [Modul 15: Nilai (`grades`)](#modul-15-nilai-grades)
+    - [Modul 16: Pengumuman (dengan Policy) (`announcements`)](#modul-16-pengumuman-dengan-policy-announcements)
+- **[BAGIAN E: Penyelesaian](#bagian-e-penyelesaian)**
+  - [TAHAP 11: Uji Coba Akhir & Checklist Penyelesaian](#tahap-11-uji-coba-akhir--checklist-penyelesaian)
+- **[Lampiran](#lampiran)**
+  - [Lampiran A: Ringkasan Spesifikasi per Modul](#lampiran-a-ringkasan-spesifikasi-per-modul)
+  - [Lampiran B: Struktur Direktori View Lengkap](#lampiran-b-struktur-direktori-view-lengkap)
+  - [Lampiran C: Ringkasan Teknologi yang Digunakan](#lampiran-c-ringkasan-teknologi-yang-digunakan)
+  - [📝 Catatan Akhir](#-catatan-akhir)
+
+---
+
+# BAGIAN A: Perancangan Sistem
+
+Bagian ini berisi rancangan yang akan dibangun. Belum ada kode yang dikerjakan; pahami dulu tabel, relasi, dan role pengguna.
 
 ## 📐 Perancangan Database (ERD)
 
@@ -242,6 +282,26 @@ Membangun **Sistem Informasi Akademik (SIAKAD)** menggunakan Laravel dengan fitu
 
 ### Daftar Modul CRUD
 
+Nomor modul di bawah mengikuti **urutan pengerjaan** di TAHAP 10: dimulai dari tabel tanpa foreign key, lalu tabel yang bergantung pada tabel lain.
+
+| No | Modul | Tabel | Controller | Route Prefix |
+|----|-------|-------|------------|--------------|
+| 01 | [Jurusan](#modul-01-jurusan-departments) | `departments` | `DepartmentController` | `/departments` |
+| 02 | [Kategori Mata Kuliah](#modul-02-kategori-mata-kuliah-categories) | `categories` | `CategoryController` | `/categories` |
+| 03 | [Ruang Kelas](#modul-03-ruang-kelas-classrooms) | `classrooms` | `ClassroomController` | `/classrooms` |
+| 04 | [Tag Mata Kuliah](#modul-04-tag-mata-kuliah-tags) | `tags` | `TagController` | `/tags` |
+| 05 | [Ekstrakurikuler](#modul-05-ekstrakurikuler-extracurriculars) | `extracurriculars` | `ExtracurricularController` | `/extracurriculars` |
+| 06 | [Users](#modul-06-users-users) | `users` | `UserController` | `/users` |
+| 07 | [Profil Pengguna](#modul-07-profil-pengguna-profiles) | `profiles` | `ProfileController` | `/profiles` |
+| 08 | [Dosen](#modul-08-dosen-teachers) | `teachers` | `TeacherController` | `/teachers` |
+| 09 | [Mahasiswa](#modul-09-mahasiswa-students) | `students` | `StudentController` | `/students` |
+| 10 | [Mata Kuliah](#modul-10-mata-kuliah-courses) | `courses` | `CourseController` | `/courses` |
+| 11 | [Jadwal Perkuliahan](#modul-11-jadwal-perkuliahan-schedules) | `schedules` | `ScheduleController` | `/schedules` |
+| 12 | [Enrollment (KRS)](#modul-12-enrollment-krs-enrollments) | `enrollments` | `EnrollmentController` | `/enrollments` |
+| 13 | [Tugas](#modul-13-tugas-assignments) | `assignments` | `AssignmentController` | `/assignments` |
+| 14 | [Pengumpulan Tugas](#modul-14-pengumpulan-tugas-submissions) | `submissions` | `SubmissionController` | `/submissions` |
+| 15 | [Nilai](#modul-15-nilai-grades) | `grades` | `GradeController` | `/grades` |
+| 16 | [Pengumuman (dengan Policy)](#modul-16-pengumuman-dengan-policy-announcements) | `announcements` | `AnnouncementController` | `/announcements` |
 | No | Modul                 | Controller                   | Route Prefix         |
 |----|-----------------------|------------------------------|----------------------|
 | 1  | Users                 | `UserController`             | `/users`             |
@@ -263,9 +323,9 @@ Membangun **Sistem Informasi Akademik (SIAKAD)** menggunakan Laravel dengan fitu
 
 ---
 
-# 📋 LANGKAH-LANGKAH PENGERJAAN
+# BAGIAN B: Persiapan Project & Database
 
----
+Menyiapkan project Laravel, database, struktur tabel, model, data dummy, dan route.
 
 ## TAHAP 1: Install Laravel Project
 
@@ -291,6 +351,10 @@ composer run dev
 ```
 
 Buka browser dan akses `http://localhost:8000` untuk memastikan instalasi berhasil.
+
+> Biarkan server tetap berjalan di terminal ini selama mengerjakan panduan, dan gunakan terminal lain untuk perintah `php artisan`. Jika tidak ingin memakai Vite, server juga bisa dijalankan dengan `php artisan serve`.
+
+> ✅ **Cek hasil TAHAP 1:** halaman awal Laravel tampil di browser.
 
 ---
 
@@ -326,6 +390,8 @@ php artisan migrate
 ```
 
 Jika berhasil tanpa error, koneksi database sudah terhubung.
+
+> ✅ **Cek hasil TAHAP 2:** `php artisan migrate` selesai tanpa error dan tabel bawaan Laravel (`users`, `sessions`, `cache`, `jobs`, dll) muncul di database `siakad_laravel`.
 
 ---
 
@@ -647,8 +713,12 @@ Schema::create('extracurricular_student', function (Blueprint $table) {
 ### 3.19 Jalankan Semua Migration
 
 ```bash
-php artisan migrate
+php artisan migrate:fresh
 ```
+
+> Gunakan `migrate:fresh` (bukan `migrate`), karena tabel `users` sudah dibuat saat TAHAP 2.3 sebelum kolom `role` ditambahkan. `migrate:fresh` menghapus semua tabel lalu membuat ulang dari awal, sehingga kolom `role` ikut terbentuk.
+
+> ✅ **Cek hasil TAHAP 3:** ke-18 tabel pada daftar di [Perancangan Database](#-perancangan-database-erd) sudah ada di database (ditambah tabel bawaan Laravel), dan tabel `users` memiliki kolom `role`.
 
 ---
 
@@ -1402,6 +1472,8 @@ class Extracurricular extends Model
 }
 ```
 
+> ✅ **Cek hasil TAHAP 4:** folder `app/Models` berisi 16 model: `User` (dimodifikasi) dan 15 model baru.
+
 ---
 
 ## TAHAP 5: Isikan Data Dummy (Seeder & Factory)
@@ -1762,9 +1834,11 @@ php artisan migrate:fresh --seed
 > - **User (Dosen)**: `dosen1@siakad.com` s/d `dosen5@siakad.com` / `password`
 > - **User (Mahasiswa)**: `mahasiswa1@siakad.com` s/d `mahasiswa10@siakad.com` / `password`
 
+> ✅ **Cek hasil TAHAP 5:** tabel `users` berisi 16 akun (1 admin, 5 dosen, 10 mahasiswa) dan tabel lain seperti `departments`, `courses`, `grades` sudah terisi data dummy.
+
 ---
 
-## TAHAP 6: Buat Route
+## TAHAP 6: Daftarkan Route
 
 ### 6.1 Setup Autentikasi Route
 
@@ -1834,25 +1908,19 @@ Route::middleware('auth')->group(function () {
 });
 ```
 
-### 6.2 Daftar Route yang Dihasilkan oleh `Route::resource()`
+> **Catatan:** route untuk ke-16 modul didaftarkan **sekarang sekaligus**, sehingga tidak perlu menambah route lagi di tahap berikutnya. Controller-nya baru dibuat bertahap di TAHAP 7–10. Selama controller belum ada, membuka menu modul tersebut akan menampilkan error *Target class [...Controller] does not exist*. Ini normal. Penjelasan 7 route yang dihasilkan `Route::resource()` ada di [TAHAP 9.1](#91-tujuh-route-dari-routeresource).
 
-Setiap `Route::resource()` menghasilkan 7 route:
-
-| Method    | URI                          | Action    | Route Name               | Keterangan         |
-|-----------|------------------------------|-----------|--------------------------|---------------------|
-| GET       | `/departments`               | `index`   | `departments.index`      | Tampilkan semua data|
-| GET       | `/departments/create`        | `create`  | `departments.create`     | Form tambah data    |
-| POST      | `/departments`               | `store`   | `departments.store`      | Simpan data baru    |
-| GET       | `/departments/{department}`  | `show`    | `departments.show`       | Detail satu data    |
-| GET       | `/departments/{department}/edit` | `edit`| `departments.edit`       | Form edit data      |
-| PUT/PATCH | `/departments/{department}`  | `update`  | `departments.update`     | Update data         |
-| DELETE    | `/departments/{department}`  | `destroy` | `departments.destroy`    | Hapus data          |
-
-> Pola yang sama berlaku untuk semua 16 modul resource.
+> ✅ **Cek hasil TAHAP 6:** file `routes/web.php` tersimpan. Aplikasi belum bisa dicoba di browser karena `AuthController` dan halaman login baru dibuat di TAHAP 7–8.
 
 ---
 
-## TAHAP 7: Buat Controller
+# BAGIAN C: Fondasi Aplikasi
+
+Membuat autentikasi, Gate, layout, halaman login, dan dashboard. Di akhir bagian ini aplikasi sudah bisa dipakai untuk login dan logout.
+
+## TAHAP 7: Buat Autentikasi & Gate
+
+Tahap ini menyiapkan proses **login/logout** dan aturan otorisasi **Gate `admin`** yang dipakai oleh hampir semua modul.
 
 ### 7.1 AuthController (Autentikasi)
 
@@ -1907,7 +1975,7 @@ class AuthController extends Controller
 }
 ```
 
-### 7.2 Setup Gate di `AppServiceProvider`
+### 7.2 Setup Gate & Pagination di `AppServiceProvider`
 
 File: `app/Providers/AppServiceProvider.php`
 
@@ -1942,7 +2010,25 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-### 7.3 DashboardController
+> ✅ **Cek hasil TAHAP 7:** file `AuthController.php` dan `AppServiceProvider.php` tersimpan. Login baru bisa diuji setelah halaman login dibuat di TAHAP 8.
+
+---
+
+## TAHAP 8: Buat Dashboard, Layout & Halaman Login
+
+Tahap ini membuat halaman pertama yang bisa dibuka di browser: halaman login, layout utama (navbar + flash message), dan dashboard.
+
+Buat file view-nya terlebih dahulu:
+
+```bash
+php artisan make:view layouts.app
+php artisan make:view auth.login
+php artisan make:view dashboard
+```
+
+Hapus isi bawaan ketiga file tersebut, lalu isi dengan kode pada langkah-langkah berikut.
+
+### 8.1 Buat `DashboardController`
 
 ```bash
 php artisan make:controller DashboardController
@@ -1976,282 +2062,9 @@ class DashboardController extends Controller
 }
 ```
 
-### 7.4 Contoh Controller CRUD Lengkap — `DepartmentController`
+### 8.2 Buat Layout Utama
 
-> **Pola ini berlaku untuk semua 16 modul CRUD.** Setiap controller mengikuti struktur yang sama. Di bawah ini diberikan contoh lengkap untuk modul **Department**, lalu panduan singkat perbedaan di setiap modul lainnya.
-
-```bash
-php artisan make:controller DepartmentController --resource
-```
-
-File: `app/Http/Controllers/DepartmentController.php`
-
-```php
-<?php
-
-namespace App\Http\Controllers;
-
-use App\Models\Department;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
-
-class DepartmentController extends Controller
-{
-    /**
-     * Tampilkan semua data department.
-     * Dapat diakses oleh semua user yang sudah login.
-     */
-    public function index()
-    {
-        $departments = Department::withCount(['teachers', 'students', 'courses'])->paginate(10);
-        return view('departments.index', compact('departments'));
-    }
-
-    /**
-     * Tampilkan form untuk membuat department baru.
-     * Hanya admin yang bisa mengakses.
-     */
-    public function create()
-    {
-        Gate::authorize('admin');
-        return view('departments.create');
-    }
-
-    /**
-     * Simpan department baru ke database.
-     * Hanya admin yang bisa mengakses.
-     */
-    public function store(Request $request)
-    {
-        Gate::authorize('admin');
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|max:10|unique:departments,code',
-            'description' => 'nullable|string',
-        ]);
-
-        Department::create($validated);
-
-        return redirect()->route('departments.index')
-                         ->with('success', 'Department berhasil ditambahkan.');
-    }
-
-    /**
-     * Tampilkan detail satu department.
-     * Dapat diakses oleh semua user yang sudah login.
-     */
-    public function show(Department $department)
-    {
-        $department->load(['teachers.user', 'students.user', 'courses']);
-        return view('departments.show', compact('department'));
-    }
-
-    /**
-     * Tampilkan form untuk mengedit department.
-     * Hanya admin yang bisa mengakses.
-     */
-    public function edit(Department $department)
-    {
-        Gate::authorize('admin');
-        return view('departments.edit', compact('department'));
-    }
-
-    /**
-     * Update data department di database.
-     * Hanya admin yang bisa mengakses.
-     */
-    public function update(Request $request, Department $department)
-    {
-        Gate::authorize('admin');
-
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'code' => 'required|string|max:10|unique:departments,code,' . $department->id,
-            'description' => 'nullable|string',
-        ]);
-
-        $department->update($validated);
-
-        return redirect()->route('departments.index')
-                         ->with('success', 'Department berhasil diupdate.');
-    }
-
-    /**
-     * Hapus department dari database.
-     * Hanya admin yang bisa mengakses.
-     */
-    public function destroy(Department $department)
-    {
-        Gate::authorize('admin');
-
-        $department->delete();
-
-        return redirect()->route('departments.index')
-                         ->with('success', 'Department berhasil dihapus.');
-    }
-}
-```
-
----
-
-### 7.5 Panduan Controller untuk Setiap Modul
-
-Setiap controller mengikuti pola yang sama seperti `DepartmentController`. Berikut **perbedaan spesifik** untuk setiap modul:
-
-> 📦 **Kode lengkap** (controller + 4 view + langkah uji coba) untuk ke-16 modul tersedia di [TAHAP 13](#tahap-13-kode-lengkap-per-modul). Tabel di bawah ini adalah ringkasannya.
-
-#### 📌 Modul 1: `UserController`
-
-| Aspek         | Detail                                                                   |
-|---------------|--------------------------------------------------------------------------|
-| Model         | `User`                                                                   |
-| Validation    | `name` (required), `email` (required, email, unique), `password` (required saat create, nullable saat edit), `role` (required, in:admin,user) |
-| Relasi Load   | `index`: `with('profile')` · `show`: `with(['profile', 'teacher', 'student', 'announcements'])` |
-| Catatan       | Password di-hash saat store/update. Saat update, password hanya diubah jika diisi. |
-
-#### 📌 Modul 2: `ProfileController`
-
-| Aspek         | Detail                                                                   |
-|---------------|--------------------------------------------------------------------------|
-| Model         | `Profile`                                                                |
-| Validation    | `user_id` (required, exists:users,id), `phone` (nullable, max:20), `address` (nullable), `avatar` (nullable, image), `birth_date` (nullable, date) |
-| Relasi Load   | `index`: `with('user')` · `show`: `with('user')` |
-| Catatan       | Pada form create, tampilkan dropdown daftar user yang belum memiliki profil. Avatar di-upload ke `storage/app/public/avatars` (jalankan `php artisan storage:link`) dan form wajib memakai `enctype="multipart/form-data"`. |
-
-#### 📌 Modul 3: `DepartmentController`
-
-| Aspek         | Detail                                                                   |
-|---------------|--------------------------------------------------------------------------|
-| Model         | `Department`                                                             |
-| Validation    | `name` (required), `code` (required, max:10, unique), `description` (nullable) |
-| Relasi Load   | `index`: `withCount(['teachers', 'students', 'courses'])` · `show`: `with(['teachers.user', 'students.user', 'courses'])` |
-
-#### 📌 Modul 4: `TeacherController`
-
-| Aspek         | Detail                                                                   |
-|---------------|--------------------------------------------------------------------------|
-| Model         | `Teacher`                                                                |
-| Validation    | `user_id` (required, exists:users,id), `department_id` (required, exists:departments,id), `nip` (required, unique), `specialization` (nullable) |
-| Relasi Load   | `index`: `with(['user', 'department'])` · `show`: `with(['user.profile', 'department', 'schedules.course'])` |
-| Form Data     | Kirim daftar `$users` dan `$departments` ke view create/edit. |
-
-#### 📌 Modul 5: `StudentController`
-
-| Aspek         | Detail                                                                   |
-|---------------|--------------------------------------------------------------------------|
-| Model         | `Student`                                                                |
-| Validation    | `user_id` (required, exists:users,id), `department_id` (required, exists:departments,id), `nim` (required, unique), `semester` (required, integer, min:1, max:14), `extracurriculars` (nullable, array) |
-| Relasi Load   | `index`: `with(['user', 'department'])` · `show`: `with(['user.profile', 'department', 'courses', 'grades.course', 'extracurriculars'])` |
-| Form Data     | Kirim daftar `$users`, `$departments`, dan `$extracurriculars` ke view create/edit. |
-| Catatan       | Ekstrakurikuler dipilih dengan checkbox (Many-to-Many). Gunakan `attach()` saat store dan `sync()` saat update. |
-
-#### 📌 Modul 6: `CategoryController`
-
-| Aspek         | Detail                                                                   |
-|---------------|--------------------------------------------------------------------------|
-| Model         | `Category`                                                               |
-| Validation    | `name` (required), `description` (nullable) |
-| Relasi Load   | `index`: `withCount('courses')` · `show`: `with('courses')` |
-
-#### 📌 Modul 7: `CourseController`
-
-| Aspek         | Detail                                                                   |
-|---------------|--------------------------------------------------------------------------|
-| Model         | `Course`                                                                 |
-| Validation    | `category_id` (required, exists), `department_id` (required, exists), `code` (required, unique), `name` (required), `credits` (required, integer, min:1, max:6), `description` (nullable), `tags` (nullable, array) |
-| Relasi Load   | `index`: `with(['category', 'department'])` · `show`: `with(['category', 'department', 'tags', 'schedules.teacher', 'assignments'])` |
-| Form Data     | Kirim `$categories`, `$departments`, `$tags` ke view create/edit. |
-| Catatan       | Gunakan `$course->tags()->sync($request->tags)` untuk menyimpan relasi many-to-many dengan tags. |
-
-#### 📌 Modul 8: `ClassroomController`
-
-| Aspek         | Detail                                                                   |
-|---------------|--------------------------------------------------------------------------|
-| Model         | `Classroom`                                                              |
-| Validation    | `name` (required), `building` (required), `capacity` (required, integer, min:1) |
-| Relasi Load   | `index`: query biasa · `show`: `with('schedules.course')` |
-
-#### 📌 Modul 9: `ScheduleController`
-
-| Aspek         | Detail                                                                   |
-|---------------|--------------------------------------------------------------------------|
-| Model         | `Schedule`                                                               |
-| Validation    | `course_id` (required, exists), `teacher_id` (required, exists), `classroom_id` (required, exists), `day` (required, in:Senin,...,Sabtu), `start_time` (required), `end_time` (required, after:start_time) |
-| Relasi Load   | `index`: `with(['course', 'teacher.user', 'classroom'])` · `show`: sama |
-| Form Data     | Kirim `$courses`, `$teachers`, `$classrooms` ke view create/edit. |
-
-#### 📌 Modul 10: `EnrollmentController`
-
-| Aspek         | Detail                                                                   |
-|---------------|--------------------------------------------------------------------------|
-| Model         | `Enrollment`                                                             |
-| Validation    | `student_id` (required, exists), `course_id` (required, exists), `academic_year` (required, max:9), `semester` (required, in:Ganjil,Genap), `status` (required, in:active,dropped,completed) |
-| Relasi Load   | `index`: `with(['student.user', 'course'])` · `show`: sama |
-| Form Data     | Kirim `$students` (with user name) dan `$courses` ke view create/edit. |
-
-#### 📌 Modul 11: `AssignmentController`
-
-| Aspek         | Detail                                                                   |
-|---------------|--------------------------------------------------------------------------|
-| Model         | `Assignment`                                                             |
-| Validation    | `course_id` (required, exists), `title` (required), `description` (nullable), `due_date` (required, date, after:today) |
-| Relasi Load   | `index`: `with('course')` · `show`: `with(['course', 'submissions.student.user'])` |
-| Form Data     | Kirim `$courses` ke view create/edit. |
-
-#### 📌 Modul 12: `SubmissionController`
-
-| Aspek         | Detail                                                                   |
-|---------------|--------------------------------------------------------------------------|
-| Model         | `Submission`                                                             |
-| Validation    | `assignment_id` (required, exists), `student_id` (required, exists), `file` (nullable, file, mimes:pdf,doc,docx,zip, max:2048), `notes` (nullable), `submitted_at` (nullable, date), `score` (nullable, numeric, min:0, max:100) |
-| Relasi Load   | `index`: `with(['assignment.course', 'student.user'])` · `show`: sama |
-| Form Data     | Kirim `$assignments` dan `$students` ke view create/edit. |
-| Catatan       | File di-upload ke `storage/app/public/submissions`, path-nya disimpan di kolom `file_path`. |
-
-#### 📌 Modul 13: `GradeController`
-
-| Aspek         | Detail                                                                   |
-|---------------|--------------------------------------------------------------------------|
-| Model         | `Grade`                                                                  |
-| Validation    | `student_id` (required, exists), `course_id` (required, exists), `academic_year` (required), `midterm_score` (nullable, numeric, min:0, max:100), `final_score` (nullable, numeric, min:0, max:100), `grade_letter` (nullable, in:A,AB,B,BC,C,D,E) |
-| Relasi Load   | `index`: `with(['student.user', 'course'])` · `show`: sama |
-| Form Data     | Kirim `$students` dan `$courses` ke view create/edit. |
-| Catatan       | Jika `grade_letter` dikosongkan, nilai huruf dihitung otomatis dari rata-rata UTS & UAS. |
-
-#### 📌 Modul 14: `AnnouncementController`
-
-| Aspek         | Detail                                                                   |
-|---------------|--------------------------------------------------------------------------|
-| Model         | `Announcement`                                                           |
-| Validation    | `title` (required), `content` (required), `is_published` (boolean) |
-| Relasi Load   | `index`: `with('user')` · `show`: `with('user')` |
-| Catatan       | `user_id` diisi otomatis dari user yang login saat store. Otorisasi memakai **Policy** `AnnouncementPolicy` (bukan Gate `admin`), dan user biasa hanya melihat pengumuman yang sudah dipublikasikan. |
-
-#### 📌 Modul 15: `TagController`
-
-| Aspek         | Detail                                                                   |
-|---------------|--------------------------------------------------------------------------|
-| Model         | `Tag`                                                                    |
-| Validation    | `name` (required), `slug` (required, unique) |
-| Relasi Load   | `index`: `withCount('courses')` · `show`: `with('courses')` |
-| Catatan       | Slug bisa di-generate otomatis dari name menggunakan `Str::slug()`. |
-
-#### 📌 Modul 16: `ExtracurricularController`
-
-| Aspek         | Detail                                                                   |
-|---------------|--------------------------------------------------------------------------|
-| Model         | `Extracurricular`                                                        |
-| Validation    | `name` (required), `description` (nullable), `max_members` (required, integer, min:1) |
-| Relasi Load   | `index`: `withCount('students')` · `show`: `with('students.user')` |
-
----
-
-## TAHAP 8: Buat View — Read (Index / Tampilkan Semua Data)
-
-### 8.1 Setup Layout Utama dengan Blade Component
-
-Buat layout utama yang akan digunakan oleh semua view.
+Layout utama berisi navbar, flash message, dan area konten. Semua halaman lain cukup menulis `@extends('layouts.app')` lalu mengisi `@section('content')`.
 
 File: `resources/views/layouts/app.blade.php`
 
@@ -2358,7 +2171,7 @@ File: `resources/views/layouts/app.blade.php`
 </html>
 ```
 
-### 8.2 View Login
+### 8.3 Buat View Login
 
 File: `resources/views/auth/login.blade.php`
 
@@ -2413,7 +2226,7 @@ File: `resources/views/auth/login.blade.php`
 </html>
 ```
 
-### 8.3 View Dashboard
+### 8.4 Buat View Dashboard
 
 File: `resources/views/dashboard.blade.php`
 
@@ -2463,500 +2276,91 @@ File: `resources/views/dashboard.blade.php`
 @endsection
 ```
 
-### 8.4 Contoh View Index — `departments/index.blade.php`
+### 8.5 Uji Coba Fondasi Aplikasi
 
-> **Pola ini berlaku untuk semua modul.** Sesuaikan nama kolom tabel dan data yang ditampilkan.
+Pastikan server berjalan, buka `http://localhost:8000`, lalu cek satu per satu:
 
-File: `resources/views/departments/index.blade.php`
+- [ ] Membuka `http://localhost:8000` tanpa login → otomatis diarahkan ke halaman `/login`.
+- [ ] Login dengan password salah → muncul pesan *Email atau password salah.*
+- [ ] Login sebagai `admin@siakad.com` / `password` → dashboard tampil dengan jumlah user, mahasiswa, dosen, dan mata kuliah. Di navbar tampil nama dan badge **Admin**.
+- [ ] Klik nama di navbar → **Logout** → kembali ke halaman login.
+- [ ] Login sebagai `mahasiswa1@siakad.com` → badge di navbar berwarna biru (**User**).
 
-```html
-@extends('layouts.app')
+> Menu di navbar sudah tampil, tetapi menu modul belum bisa dibuka sampai modulnya dikerjakan di TAHAP 10.
 
-@section('title', 'Data Jurusan')
-
-@section('content')
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Data Jurusan</h2>
-    @can('admin')
-        <a href="{{ route('departments.create') }}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> Tambah Jurusan
-        </a>
-    @endcan
-</div>
-
-<table class="table table-bordered table-striped">
-    <thead class="table-dark">
-        <tr>
-            <th>No</th>
-            <th>Kode</th>
-            <th>Nama Jurusan</th>
-            <th>Jumlah Dosen</th>
-            <th>Jumlah Mahasiswa</th>
-            <th>Jumlah Mata Kuliah</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        @forelse($departments as $i => $dept)
-        <tr>
-            <td>{{ $departments->firstItem() + $i }}</td>
-            <td><span class="badge bg-secondary">{{ $dept->code }}</span></td>
-            <td>{{ $dept->name }}</td>
-            <td>{{ $dept->teachers_count }}</td>
-            <td>{{ $dept->students_count }}</td>
-            <td>{{ $dept->courses_count }}</td>
-            <td>
-                <a href="{{ route('departments.show', $dept) }}" class="btn btn-sm btn-info">
-                    <i class="bi bi-eye"></i> Detail
-                </a>
-                @can('admin')
-                    <a href="{{ route('departments.edit', $dept) }}" class="btn btn-sm btn-warning">
-                        <i class="bi bi-pencil"></i> Edit
-                    </a>
-                    <form action="{{ route('departments.destroy', $dept) }}" method="POST" class="d-inline"
-                          onsubmit="return confirm('Yakin ingin menghapus?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger">
-                            <i class="bi bi-trash"></i> Hapus
-                        </button>
-                    </form>
-                @endcan
-            </td>
-        </tr>
-        @empty
-        <tr>
-            <td colspan="7" class="text-center">Belum ada data.</td>
-        </tr>
-        @endforelse
-    </tbody>
-</table>
-
-{{ $departments->links() }}
-@endsection
-```
-
-> **Catatan penting:**
-> - Directive `@can('admin')` digunakan untuk menyembunyikan tombol **Tambah**, **Edit**, dan **Hapus** dari user non-admin.
-> - User biasa (role `user`) hanya bisa melihat tabel data dan tombol **Detail**.
+> ✅ **Cek hasil TAHAP 8:** semua poin uji coba di atas berhasil. Fondasi aplikasi selesai, saatnya membangun modul CRUD.
 
 ---
 
-## TAHAP 9: Buat View — Create (Tambah Data Baru)
+# BAGIAN D: Membangun 16 Modul CRUD
 
-### 9.1 Contoh View Create — `departments/create.blade.php`
+Memahami pola CRUD, lalu mengerjakan ke-16 modul satu per satu sampai selesai.
 
-File: `resources/views/departments/create.blade.php`
+## TAHAP 9: Pahami Pola CRUD Sebelum Mulai
 
-```html
-@extends('layouts.app')
+Ke-16 modul di TAHAP 10 dibangun dengan pola yang **sama persis**: **1 controller resource + 4 view** (`index`, `create`, `show`, `edit`). Tahap ini menjelaskan pola tersebut sekali saja dengan contoh modul Jurusan.
 
-@section('title', 'Tambah Jurusan')
+> Tidak ada file yang dibuat di tahap ini. Cukup baca dan pahami, karena kode lengkapnya dikerjakan mulai [Modul 01](#modul-01-jurusan-departments).
 
-@section('content')
-<h2>Tambah Jurusan Baru</h2>
+### 9.1 Tujuh Route dari `Route::resource()`
 
-<div class="card">
-    <div class="card-body">
-        <form action="{{ route('departments.store') }}" method="POST">
-            @csrf
+Setiap `Route::resource()` menghasilkan 7 route:
 
-            <div class="mb-3">
-                <label for="name" class="form-label">Nama Jurusan <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('name') is-invalid @enderror"
-                       id="name" name="name" value="{{ old('name') }}" required>
-                @error('name')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+| Method    | URI                          | Action    | Route Name               | Keterangan         |
+|-----------|------------------------------|-----------|--------------------------|---------------------|
+| GET       | `/departments`               | `index`   | `departments.index`      | Tampilkan semua data|
+| GET       | `/departments/create`        | `create`  | `departments.create`     | Form tambah data    |
+| POST      | `/departments`               | `store`   | `departments.store`      | Simpan data baru    |
+| GET       | `/departments/{department}`  | `show`    | `departments.show`       | Detail satu data    |
+| GET       | `/departments/{department}/edit` | `edit`| `departments.edit`       | Form edit data      |
+| PUT/PATCH | `/departments/{department}`  | `update`  | `departments.update`     | Update data         |
+| DELETE    | `/departments/{department}`  | `destroy` | `departments.destroy`    | Hapus data          |
 
-            <div class="mb-3">
-                <label for="code" class="form-label">Kode Jurusan <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('code') is-invalid @enderror"
-                       id="code" name="code" value="{{ old('code') }}" maxlength="10" required>
-                @error('code')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+> Pola yang sama berlaku untuk semua 16 modul resource.
 
-            <div class="mb-3">
-                <label for="description" class="form-label">Deskripsi</label>
-                <textarea class="form-control @error('description') is-invalid @enderror"
-                          id="description" name="description" rows="3">{{ old('description') }}</textarea>
-                @error('description')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+Route `index` dan `show` boleh dibuka **semua user yang login**. Lima route lainnya (`create`, `store`, `edit`, `update`, `destroy`) **khusus admin**.
 
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-save"></i> Simpan
-                </button>
-                <a href="{{ route('departments.index') }}" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Kembali
-                </a>
-            </div>
-        </form>
-    </div>
-</div>
-@endsection
-```
+### 9.2 Pola Controller
 
-### 9.2 Contoh View Create dengan Dropdown Relasi — `courses/create.blade.php`
+Setiap controller dibuat dengan `php artisan make:controller NamaController --resource` dan berisi 7 method berikut:
 
-> Untuk modul yang memiliki relasi foreign key, tampilkan **dropdown select** untuk memilih data dari tabel yang berelasi.
+| Method | Tugas | Hasil | Akses |
+|--------|-------|-------|-------|
+| `index` | Ambil daftar data dengan `paginate(10)` | Tampilkan view `index` | Semua user login |
+| `create` | Siapkan data dropdown (jika ada) | Tampilkan view `create` | Admin |
+| `store` | Validasi → simpan data baru | Redirect ke `index` + pesan sukses | Admin |
+| `show` | Ambil satu data beserta relasinya | Tampilkan view `show` | Semua user login |
+| `edit` | Siapkan data lama + dropdown | Tampilkan view `edit` | Admin |
+| `update` | Validasi → perbarui data | Redirect ke `index` + pesan sukses | Admin |
+| `destroy` | Hapus data | Redirect ke `index` + pesan sukses | Admin |
 
-File: `resources/views/courses/create.blade.php`
+Konsep yang dipakai di semua controller:
 
-```html
-@extends('layouts.app')
+- **`Gate::authorize('admin')`** di baris pertama `create`, `store`, `edit`, `update`, dan `destroy`. Jika bukan admin, Laravel menampilkan **403 Forbidden**. (Modul 16 memakai **Policy** sebagai pengganti Gate.)
+- **Route Model Binding**: parameter seperti `Department $department` otomatis diisi data sesuai ID di URL, atau **404** jika tidak ditemukan.
+- **Validasi** dengan `$request->validate([...])`. Saat update, aturan unique mengecualikan data sendiri: `'unique:departments,code,' . $department->id`.
+- **Eager loading** `with()` / `load()` dan `withCount()` untuk memuat relasi sekaligus (mencegah masalah *N+1 query*).
+- **Flash message**: `redirect()->route('...index')->with('success', '...')` ditampilkan otomatis oleh layout.
 
-@section('title', 'Tambah Mata Kuliah')
+> Contoh lengkap beserta penjelasan per baris: [Modul 01 → Langkah 1](#modul-01-jurusan-departments).
 
-@section('content')
-<h2>Tambah Mata Kuliah Baru</h2>
+### 9.3 Pola View
 
-<div class="card">
-    <div class="card-body">
-        <form action="{{ route('courses.store') }}" method="POST">
-            @csrf
+| View | Isi Halaman | Bagian Wajib |
+|------|-------------|--------------|
+| `index.blade.php` | Tabel daftar data + tombol aksi + pagination | `@can('admin')` untuk tombol Tambah/Edit/Hapus, nomor `$data->firstItem() + $i`, `@forelse ... @empty`, `{{ $data->links() }}` |
+| `create.blade.php` | Form tambah data | `@csrf`, `old('field')`, `@error('field')` + class `is-invalid` |
+| `show.blade.php` | Detail data + tabel data relasi | Akses relasi (`$department->teachers`), `@forelse ... @empty` |
+| `edit.blade.php` | Form ubah data | `@csrf`, `@method('PUT')`, `old('field', $model->field)` |
 
-            <div class="mb-3">
-                <label for="category_id" class="form-label">Kategori <span class="text-danger">*</span></label>
-                <select class="form-select @error('category_id') is-invalid @enderror"
-                        id="category_id" name="category_id" required>
-                    <option value="">-- Pilih Kategori --</option>
-                    @foreach($categories as $category)
-                        <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
-                            {{ $category->name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('category_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+Catatan penting:
 
-            <div class="mb-3">
-                <label for="department_id" class="form-label">Jurusan <span class="text-danger">*</span></label>
-                <select class="form-select @error('department_id') is-invalid @enderror"
-                        id="department_id" name="department_id" required>
-                    <option value="">-- Pilih Jurusan --</option>
-                    @foreach($departments as $department)
-                        <option value="{{ $department->id }}" {{ old('department_id') == $department->id ? 'selected' : '' }}>
-                            {{ $department->name }}
-                        </option>
-                    @endforeach
-                </select>
-                @error('department_id')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
+- `@can('admin')` **hanya menyembunyikan tombol**. Perlindungan sesungguhnya tetap `Gate::authorize()` di controller, karena user bisa mengetik URL secara manual.
+- **Dropdown relasi** (foreign key): `<option value="{{ $item->id }}" {{ old('x_id') == $item->id ? 'selected' : '' }}>`. Contoh: [Modul 08: Dosen](#modul-08-dosen-teachers).
+- **Checkbox Many-to-Many**: `name="tags[]"` dan `in_array($tag->id, old('tags', [...]))`. Contoh: [Modul 09: Mahasiswa](#modul-09-mahasiswa-students) dan [Modul 10: Mata Kuliah](#modul-10-mata-kuliah-courses).
+- **Upload file**: form wajib memakai `enctype="multipart/form-data"`. Contoh: [Modul 07: Profil Pengguna](#modul-07-profil-pengguna-profiles).
 
-            <div class="mb-3">
-                <label for="code" class="form-label">Kode Mata Kuliah <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('code') is-invalid @enderror"
-                       id="code" name="code" value="{{ old('code') }}" maxlength="10" required>
-                @error('code')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="mb-3">
-                <label for="name" class="form-label">Nama Mata Kuliah <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('name') is-invalid @enderror"
-                       id="name" name="name" value="{{ old('name') }}" required>
-                @error('name')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="mb-3">
-                <label for="credits" class="form-label">SKS <span class="text-danger">*</span></label>
-                <input type="number" class="form-control @error('credits') is-invalid @enderror"
-                       id="credits" name="credits" value="{{ old('credits', 2) }}" min="1" max="6" required>
-                @error('credits')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="mb-3">
-                <label for="description" class="form-label">Deskripsi</label>
-                <textarea class="form-control" id="description" name="description" rows="3">{{ old('description') }}</textarea>
-            </div>
-
-            {{-- Many-to-Many: Tags (Checkbox) --}}
-            <div class="mb-3">
-                <label class="form-label">Tags</label>
-                <div class="row">
-                    @foreach($tags as $tag)
-                        <div class="col-md-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="tags[]"
-                                       value="{{ $tag->id }}" id="tag{{ $tag->id }}"
-                                       {{ in_array($tag->id, old('tags', [])) ? 'checked' : '' }}>
-                                <label class="form-check-label" for="tag{{ $tag->id }}">
-                                    {{ $tag->name }}
-                                </label>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
-
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">
-                    <i class="bi bi-save"></i> Simpan
-                </button>
-                <a href="{{ route('courses.index') }}" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Kembali
-                </a>
-            </div>
-        </form>
-    </div>
-</div>
-@endsection
-```
-
-### 9.3 Panduan Form Create untuk Setiap Modul
-
-| Modul              | Tipe Input Field                                                                                                |
-|--------------------|-----------------------------------------------------------------------------------------------------------------|
-| Users              | `name` (text), `email` (email), `password` (password), `role` (select: admin/user)                              |
-| Profiles           | `user_id` (select dropdown users), `phone` (text), `address` (textarea), `avatar` (file), `birth_date` (date)  |
-| Departments        | `name` (text), `code` (text), `description` (textarea)                                                         |
-| Teachers           | `user_id` (select), `department_id` (select), `nip` (text), `specialization` (text)                            |
-| Students           | `user_id` (select), `department_id` (select), `nim` (text), `semester` (number), `extracurriculars[]` (checkbox) |
-| Categories         | `name` (text), `description` (textarea)                                                                        |
-| Courses            | `category_id` (select), `department_id` (select), `code` (text), `name` (text), `credits` (number), `description` (textarea), `tags[]` (checkbox) |
-| Classrooms         | `name` (text), `building` (text), `capacity` (number)                                                          |
-| Schedules          | `course_id` (select), `teacher_id` (select), `classroom_id` (select), `day` (select), `start_time` (time), `end_time` (time) |
-| Enrollments        | `student_id` (select), `course_id` (select), `academic_year` (text), `semester` (select), `status` (select)    |
-| Assignments        | `course_id` (select), `title` (text), `description` (textarea), `due_date` (datetime-local)                    |
-| Submissions        | `assignment_id` (select), `student_id` (select), `file` (file), `notes` (textarea), `submitted_at` (datetime-local), `score` (number) |
-| Grades             | `student_id` (select), `course_id` (select), `academic_year` (text), `midterm_score` (number), `final_score` (number), `grade_letter` (select, kosong = hitung otomatis) |
-| Announcements      | `title` (text), `content` (textarea), `is_published` (checkbox)                                                |
-| Tags               | `name` (text), `slug` (text, auto-generate dari name)                                                          |
-| Extracurriculars   | `name` (text), `description` (textarea), `max_members` (number)                                                |
-
----
-
-## TAHAP 10: Buat View — Show (Detail Data)
-
-### 10.1 Contoh View Show — `departments/show.blade.php`
-
-File: `resources/views/departments/show.blade.php`
-
-```html
-@extends('layouts.app')
-
-@section('title', 'Detail Jurusan')
-
-@section('content')
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h2>Detail Jurusan: {{ $department->name }}</h2>
-    <a href="{{ route('departments.index') }}" class="btn btn-secondary">
-        <i class="bi bi-arrow-left"></i> Kembali
-    </a>
-</div>
-
-<div class="card mb-4">
-    <div class="card-body">
-        <table class="table table-borderless">
-            <tr>
-                <th width="200">Kode</th>
-                <td>: {{ $department->code }}</td>
-            </tr>
-            <tr>
-                <th>Nama Jurusan</th>
-                <td>: {{ $department->name }}</td>
-            </tr>
-            <tr>
-                <th>Deskripsi</th>
-                <td>: {{ $department->description ?? '-' }}</td>
-            </tr>
-            <tr>
-                <th>Dibuat pada</th>
-                <td>: {{ $department->created_at->format('d M Y H:i') }}</td>
-            </tr>
-        </table>
-    </div>
-</div>
-
-{{-- Daftar Dosen di Jurusan ini (Relasi One-to-Many) --}}
-<div class="card mb-4">
-    <div class="card-header">
-        <h5 class="mb-0">Dosen di Jurusan Ini ({{ $department->teachers->count() }})</h5>
-    </div>
-    <div class="card-body">
-        <table class="table table-sm table-striped">
-            <thead>
-                <tr>
-                    <th>NIP</th>
-                    <th>Nama</th>
-                    <th>Spesialisasi</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($department->teachers as $teacher)
-                <tr>
-                    <td>{{ $teacher->nip }}</td>
-                    <td>{{ $teacher->user->name }}</td>
-                    <td>{{ $teacher->specialization ?? '-' }}</td>
-                </tr>
-                @empty
-                <tr><td colspan="3" class="text-center">Belum ada data.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-</div>
-
-{{-- Daftar Mahasiswa di Jurusan ini (Relasi One-to-Many) --}}
-<div class="card mb-4">
-    <div class="card-header">
-        <h5 class="mb-0">Mahasiswa di Jurusan Ini ({{ $department->students->count() }})</h5>
-    </div>
-    <div class="card-body">
-        <table class="table table-sm table-striped">
-            <thead>
-                <tr>
-                    <th>NIM</th>
-                    <th>Nama</th>
-                    <th>Semester</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($department->students as $student)
-                <tr>
-                    <td>{{ $student->nim }}</td>
-                    <td>{{ $student->user->name }}</td>
-                    <td>{{ $student->semester }}</td>
-                </tr>
-                @empty
-                <tr><td colspan="3" class="text-center">Belum ada data.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-</div>
-
-{{-- Daftar Mata Kuliah di Jurusan ini (Relasi One-to-Many) --}}
-<div class="card">
-    <div class="card-header">
-        <h5 class="mb-0">Mata Kuliah di Jurusan Ini ({{ $department->courses->count() }})</h5>
-    </div>
-    <div class="card-body">
-        <table class="table table-sm table-striped">
-            <thead>
-                <tr>
-                    <th>Kode</th>
-                    <th>Nama</th>
-                    <th>SKS</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($department->courses as $course)
-                <tr>
-                    <td>{{ $course->code }}</td>
-                    <td>{{ $course->name }}</td>
-                    <td>{{ $course->credits }}</td>
-                </tr>
-                @empty
-                <tr><td colspan="3" class="text-center">Belum ada data.</td></tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-</div>
-@endsection
-```
-
-### 10.2 Panduan Data yang Ditampilkan di View Show
-
-| Modul              | Data Utama                                                          | Data Relasi yang Ditampilkan                                                     |
-|--------------------|----------------------------------------------------------------------|----------------------------------------------------------------------------------|
-| Users              | name, email, role, created_at                                        | Profile (phone, address), Teacher/Student data, Announcements list               |
-| Profiles           | phone, address, avatar, birth_date                                   | User (name, email)                                                                |
-| Departments        | name, code, description                                              | List Teachers, List Students, List Courses                                        |
-| Teachers           | nip, specialization                                                  | User (name, email), Department name, List Schedules                               |
-| Students           | nim, semester                                                        | User (name, email), Department name, List Courses (enrollments), Extracurriculars |
-| Categories         | name, description                                                    | List Courses                                                                      |
-| Courses            | code, name, credits, description                                     | Category, Department, Tags (badges), List Schedules, List Assignments             |
-| Classrooms         | name, building, capacity                                             | List Schedules                                                                    |
-| Schedules          | day, start_time, end_time                                            | Course name, Teacher name, Classroom name                                         |
-| Enrollments        | academic_year, semester, status                                      | Student (nim, name), Course (code, name)                                          |
-| Assignments        | title, description, due_date                                         | Course name, List Submissions                                                     |
-| Submissions        | file_path, notes, submitted_at, score                                | Assignment title, Student (nim, name)                                             |
-| Grades             | academic_year, midterm_score, final_score, grade_letter              | Student (nim, name), Course (code, name)                                          |
-| Announcements      | title, content, is_published, created_at                             | User (author name)                                                                |
-| Tags               | name, slug                                                           | List Courses yang memiliki tag ini                                                |
-| Extracurriculars   | name, description, max_members                                       | List Students (members, with role & joined_at)                                    |
-
----
-
-## TAHAP 11: Buat View — Edit (Update Data)
-
-### 11.1 Contoh View Edit — `departments/edit.blade.php`
-
-File: `resources/views/departments/edit.blade.php`
-
-```html
-@extends('layouts.app')
-
-@section('title', 'Edit Jurusan')
-
-@section('content')
-<h2>Edit Jurusan: {{ $department->name }}</h2>
-
-<div class="card">
-    <div class="card-body">
-        <form action="{{ route('departments.update', $department) }}" method="POST">
-            @csrf
-            @method('PUT')
-
-            <div class="mb-3">
-                <label for="name" class="form-label">Nama Jurusan <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('name') is-invalid @enderror"
-                       id="name" name="name" value="{{ old('name', $department->name) }}" required>
-                @error('name')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="mb-3">
-                <label for="code" class="form-label">Kode Jurusan <span class="text-danger">*</span></label>
-                <input type="text" class="form-control @error('code') is-invalid @enderror"
-                       id="code" name="code" value="{{ old('code', $department->code) }}" maxlength="10" required>
-                @error('code')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="mb-3">
-                <label for="description" class="form-label">Deskripsi</label>
-                <textarea class="form-control @error('description') is-invalid @enderror"
-                          id="description" name="description" rows="3">{{ old('description', $department->description) }}</textarea>
-                @error('description')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-warning">
-                    <i class="bi bi-save"></i> Update
-                </button>
-                <a href="{{ route('departments.index') }}" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left"></i> Kembali
-                </a>
-            </div>
-        </form>
-    </div>
-</div>
-@endsection
-```
-
-### 11.2 Catatan Penting pada Form Edit
+#### Catatan Form Edit
 
 | Aspek                  | Detail                                                                                     |
 |------------------------|--------------------------------------------------------------------------------------------|
@@ -2965,38 +2369,9 @@ File: `resources/views/departments/edit.blade.php`
 | Unique Validation      | Pada validasi unique, exclude ID data yang sedang diedit: `'unique:table,column,' . $model->id` |
 | Many-to-Many (Edit)    | Untuk relasi many-to-many (misal tags pada courses), pre-select checkbox yang sudah terpilih menggunakan `$course->tags->pluck('id')->toArray()` |
 
-### 11.3 Contoh Edit Form Many-to-Many — Tags pada `courses/edit.blade.php`
+### 9.4 Pola Delete
 
-Pada bagian checkbox tags, pre-select tag yang sudah terpilih:
-
-```html
-{{-- Many-to-Many: Tags (Checkbox) - dengan pre-selected --}}
-<div class="mb-3">
-    <label class="form-label">Tags</label>
-    <div class="row">
-        @foreach($tags as $tag)
-            <div class="col-md-3">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="tags[]"
-                           value="{{ $tag->id }}" id="tag{{ $tag->id }}"
-                           {{ in_array($tag->id, old('tags', $course->tags->pluck('id')->toArray())) ? 'checked' : '' }}>
-                    <label class="form-check-label" for="tag{{ $tag->id }}">
-                        {{ $tag->name }}
-                    </label>
-                </div>
-            </div>
-        @endforeach
-    </div>
-</div>
-```
-
----
-
-## TAHAP 12: Buat Delete Data
-
-### 12.1 Implementasi Delete
-
-Delete sudah diimplementasikan pada:
+Hapus data tidak memiliki view sendiri. Fitur ini terdiri dari dua bagian yang sudah termasuk di kode setiap modul:
 
 1. **View (tombol delete)** — di file `index.blade.php` setiap modul:
 
@@ -3027,7 +2402,7 @@ public function destroy(Department $department)
 }
 ```
 
-### 12.2 Catatan Penting Delete
+#### Catatan Penting Delete
 
 | Aspek                  | Detail                                                                                     |
 |------------------------|--------------------------------------------------------------------------------------------|
@@ -3037,20 +2412,7 @@ public function destroy(Department $department)
 | Method Spoofing        | Gunakan `@method('DELETE')` karena HTML form tidak support method DELETE secara native       |
 | Many-to-Many Cleanup   | Untuk data yang memiliki relasi many-to-many, Laravel secara otomatis menghapus data pivot jika menggunakan `onDelete('cascade')` |
 
----
-
-## TAHAP 13: Kode Lengkap per Modul
-
-TAHAP 7–12 menjelaskan pola CRUD per **lapisan** (controller, lalu view index, create, show, edit, dan delete) dengan contoh modul Jurusan. Agar bisa diikuti langkah demi langkah sampai proyek selesai, bagian ini berisi **kode lengkap ke-16 modul**. Setiap modul berisi:
-
-1. Tujuan belajar dan relasi tabel yang dipakai
-2. Perintah `php artisan` yang perlu dijalankan
-3. Kode lengkap **controller** beserta penjelasannya
-4. Kode lengkap 4 **view**: `index`, `create`, `show`, `edit`
-5. Checklist **uji coba** (sebagai admin dan sebagai user biasa)
-6. Tantangan opsional untuk latihan
-
-### 13.1 Urutan Pengerjaan
+### 9.5 Urutan Pengerjaan Modul
 
 Modul diurutkan dari yang paling sederhana (tanpa foreign key) ke yang paling kompleks. Klik nama modul untuk langsung menuju kodenya.
 
@@ -3073,7 +2435,7 @@ Modul diurutkan dari yang paling sederhana (tanpa foreign key) ke yang paling ko
 | 15 | [Nilai (`grades`)](#modul-15-nilai-grades) | Hitung nilai huruf otomatis, `match` |
 | 16 | [Pengumuman (dengan Policy) (`announcements`)](#modul-16-pengumuman-dengan-policy-announcements) | **Policy**, `$request->boolean()`, mencegah XSS |
 
-### 13.2 Alur Kerja Setiap Modul
+### 9.6 Alur Kerja Setiap Modul
 
 ```bash
 # 1. Buat controller resource
@@ -3093,17 +2455,32 @@ php artisan serve
 > - Route semua modul sudah didaftarkan sekaligus di TAHAP 6, jadi tidak perlu menambah route lagi.
 > - Beberapa halaman berisi link ke modul lain (misalnya nama mata kuliah di detail kategori). Link tersebut baru bisa diklik setelah modul tujuannya dikerjakan. Jika diklik lebih awal, akan muncul error *Target class [...Controller] does not exist*. Ini normal.
 > - Jika ingin mengulang data dari awal, jalankan `php artisan migrate:fresh --seed`.
-> - Seluruh kode di TAHAP 13 sudah diuji pada **Laravel 13 + MySQL 8**: semua halaman dan aksi CRUD untuk admin, pembatasan akses untuk user biasa, validasi, upload file, dan relasi Many-to-Many.
+> - Seluruh kode di TAHAP 10 sudah diuji pada **Laravel 13 + MySQL 8**: semua halaman dan aksi CRUD untuk admin, pembatasan akses untuk user biasa, validasi, upload file, dan relasi Many-to-Many.
+
+---
+
+## TAHAP 10: Kerjakan 16 Modul CRUD Satu per Satu
+
+Kerjakan modul **berurutan dari Modul 01 sampai Modul 16** (lihat [urutan pengerjaan](#95-urutan-pengerjaan-modul)). Setiap modul berisi bagian yang sama:
+
+1. Tujuan belajar dan relasi tabel yang dipakai
+2. Perintah `php artisan` yang perlu dijalankan
+3. Kode lengkap **controller** beserta penjelasannya
+4. Kode lengkap 4 **view**: `index`, `create`, `show`, `edit`
+5. Checklist **uji coba** (sebagai admin dan sebagai user biasa)
+6. Tantangan opsional untuk latihan
+
+Sebuah modul dianggap **selesai** jika semua poin di bagian **Uji Coba**-nya berhasil. Setelah itu lanjut ke modul berikutnya lewat link navigasi ➡ di akhir modul.
 
 ---
 
 ### Modul 01: Jurusan (`departments`)
 
-⬅ (modul pertama) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 02: Kategori Mata Kuliah ➡](#modul-02-kategori-mata-kuliah-categories)
+[⬅ TAHAP 9: Pola CRUD](#tahap-9-pahami-pola-crud-sebelum-mulai) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 02: Kategori Mata Kuliah ➡](#modul-02-kategori-mata-kuliah-categories)
 
 Modul pertama dan paling sederhana. Tabel `departments` tidak memiliki foreign key, tetapi menjadi **induk** (parent) bagi `teachers`, `students`, dan `courses`.
 
-> Kode modul ini **sama persis** dengan contoh di TAHAP 7.4, 8.4, 9.1, 10.1, dan 11.1, dikumpulkan di sini agar lengkap di satu tempat. Jika sudah mengerjakannya, langsung lompat ke **Langkah 7: Uji Coba**.
+> Modul ini adalah **modul acuan**: pola yang dijelaskan di [TAHAP 9](#tahap-9-pahami-pola-crud-sebelum-mulai) diambil dari kode modul ini. Kerjakan dengan teliti dan baca setiap bagian **Penjelasan**.
 
 Pola di modul ini akan diulang di **semua** modul berikutnya, jadi pahami baik-baik setiap bagiannya.
 
@@ -3125,7 +2502,8 @@ Pola di modul ini akan diulang di **semua** modul berikutnya, jadi pahami baik-b
 
 #### 📋 Sebelum Mulai
 
-- TAHAP 1–7 di atas sudah selesai (migration, model, seeder, route, `AuthController`, Gate, layout, login, dashboard).
+- TAHAP 1–8 sudah selesai (migration, model, seeder, route, `AuthController`, Gate, layout, login, dashboard) dan uji coba di TAHAP 8.5 berhasil.
+- Sudah membaca pola CRUD di TAHAP 9.
 
 #### 📁 File yang Dibuat
 
@@ -3636,13 +3014,13 @@ Jalankan server (`php artisan serve`), buka `http://localhost:8000`, lalu cek sa
 - Tambahkan kotak pencarian nama jurusan di halaman index (petunjuk: `Department::where('name', 'like', '%' . $request->search . '%')` dan `->withQueryString()` pada paginator).
 - Pesan validasi bawaan Laravel berbahasa Inggris. Jalankan `php artisan lang:publish`, salin folder `lang/en` menjadi `lang/id`, terjemahkan isi `validation.php`, lalu ubah `APP_LOCALE=id` di `.env`.
 
-⬅ (modul pertama) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 02: Kategori Mata Kuliah ➡](#modul-02-kategori-mata-kuliah-categories)
+[⬅ TAHAP 9: Pola CRUD](#tahap-9-pahami-pola-crud-sebelum-mulai) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 02: Kategori Mata Kuliah ➡](#modul-02-kategori-mata-kuliah-categories)
 
 ---
 
 ### Modul 02: Kategori Mata Kuliah (`categories`)
 
-[⬅ Modul 01: Jurusan](#modul-01-jurusan-departments) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 03: Ruang Kelas ➡](#modul-03-ruang-kelas-classrooms)
+[⬅ Modul 01: Jurusan](#modul-01-jurusan-departments) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 03: Ruang Kelas ➡](#modul-03-ruang-kelas-classrooms)
 
 Kategori mata kuliah (Pemrograman, Basis Data, Jaringan, dll). Strukturnya mirip Jurusan, jadi modul ini adalah latihan untuk **mengulang pola CRUD dasar** secara mandiri.
 
@@ -4069,13 +3447,13 @@ Jalankan server (`php artisan serve`), buka `http://localhost:8000`, lalu cek sa
 
 - Tampilkan total SKS seluruh mata kuliah di halaman detail kategori (petunjuk: `$category->courses->sum('credits')`).
 
-[⬅ Modul 01: Jurusan](#modul-01-jurusan-departments) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 03: Ruang Kelas ➡](#modul-03-ruang-kelas-classrooms)
+[⬅ Modul 01: Jurusan](#modul-01-jurusan-departments) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 03: Ruang Kelas ➡](#modul-03-ruang-kelas-classrooms)
 
 ---
 
 ### Modul 03: Ruang Kelas (`classrooms`)
 
-[⬅ Modul 02: Kategori Mata Kuliah](#modul-02-kategori-mata-kuliah-categories) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 04: Tag Mata Kuliah ➡](#modul-04-tag-mata-kuliah-tags)
+[⬅ Modul 02: Kategori Mata Kuliah](#modul-02-kategori-mata-kuliah-categories) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 04: Tag Mata Kuliah ➡](#modul-04-tag-mata-kuliah-tags)
 
 Data ruang kelas. Ruangan dipakai oleh tabel `schedules`, sehingga halaman detail ruangan menampilkan jadwal kuliah yang memakai ruangan tersebut.
 
@@ -4524,13 +3902,13 @@ Jalankan server (`php artisan serve`), buka `http://localhost:8000`, lalu cek sa
 
 - Beri badge merah di kolom kapasitas jika kapasitas ruangan kurang dari 30.
 
-[⬅ Modul 02: Kategori Mata Kuliah](#modul-02-kategori-mata-kuliah-categories) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 04: Tag Mata Kuliah ➡](#modul-04-tag-mata-kuliah-tags)
+[⬅ Modul 02: Kategori Mata Kuliah](#modul-02-kategori-mata-kuliah-categories) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 04: Tag Mata Kuliah ➡](#modul-04-tag-mata-kuliah-tags)
 
 ---
 
 ### Modul 04: Tag Mata Kuliah (`tags`)
 
-[⬅ Modul 03: Ruang Kelas](#modul-03-ruang-kelas-classrooms) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 05: Ekstrakurikuler ➡](#modul-05-ekstrakurikuler-extracurriculars)
+[⬅ Modul 03: Ruang Kelas](#modul-03-ruang-kelas-classrooms) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 05: Ekstrakurikuler ➡](#modul-05-ekstrakurikuler-extracurriculars)
 
 Tag untuk mata kuliah (Backend, Frontend, Wajib, Pilihan, dll). Tag berelasi **Many-to-Many** dengan mata kuliah melalui tabel pivot `course_tag`. Modul ini juga mengajarkan cara membuat **slug** otomatis.
 
@@ -4966,13 +4344,13 @@ Jalankan server (`php artisan serve`), buka `http://localhost:8000`, lalu cek sa
 
 - Tampilkan pratinjau slug secara langsung saat user mengetik nama (JavaScript event `input`).
 
-[⬅ Modul 03: Ruang Kelas](#modul-03-ruang-kelas-classrooms) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 05: Ekstrakurikuler ➡](#modul-05-ekstrakurikuler-extracurriculars)
+[⬅ Modul 03: Ruang Kelas](#modul-03-ruang-kelas-classrooms) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 05: Ekstrakurikuler ➡](#modul-05-ekstrakurikuler-extracurriculars)
 
 ---
 
 ### Modul 05: Ekstrakurikuler (`extracurriculars`)
 
-[⬅ Modul 04: Tag Mata Kuliah](#modul-04-tag-mata-kuliah-tags) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 06: Users ➡](#modul-06-users-users)
+[⬅ Modul 04: Tag Mata Kuliah](#modul-04-tag-mata-kuliah-tags) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 06: Users ➡](#modul-06-users-users)
 
 Data kegiatan ekstrakurikuler. Ekstrakurikuler berelasi **Many-to-Many** dengan mahasiswa melalui tabel pivot `extracurricular_student` yang memiliki **kolom tambahan** `joined_at` dan `role`.
 
@@ -5431,13 +4809,13 @@ Jalankan server (`php artisan serve`), buka `http://localhost:8000`, lalu cek sa
 
 - Di halaman index, tampilkan badge **Penuh** jika `students_count >= max_members`.
 
-[⬅ Modul 04: Tag Mata Kuliah](#modul-04-tag-mata-kuliah-tags) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 06: Users ➡](#modul-06-users-users)
+[⬅ Modul 04: Tag Mata Kuliah](#modul-04-tag-mata-kuliah-tags) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 06: Users ➡](#modul-06-users-users)
 
 ---
 
 ### Modul 06: Users (`users`)
 
-[⬅ Modul 05: Ekstrakurikuler](#modul-05-ekstrakurikuler-extracurriculars) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 07: Profil Pengguna ➡](#modul-07-profil-pengguna-profiles)
+[⬅ Modul 05: Ekstrakurikuler](#modul-05-ekstrakurikuler-extracurriculars) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 07: Profil Pengguna ➡](#modul-07-profil-pengguna-profiles)
 
 Mengelola akun pengguna (admin dan user). Tabel `users` adalah pusat relasi **One-to-One**: setiap user bisa memiliki satu profil, dan terhubung ke satu data dosen **atau** satu data mahasiswa.
 
@@ -6031,13 +5409,13 @@ Jalankan server (`php artisan serve`), buka `http://localhost:8000`, lalu cek sa
 
 - Cegah admin mengubah role dirinya sendiri menjadi `user` agar tidak kehilangan akses admin.
 
-[⬅ Modul 05: Ekstrakurikuler](#modul-05-ekstrakurikuler-extracurriculars) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 07: Profil Pengguna ➡](#modul-07-profil-pengguna-profiles)
+[⬅ Modul 05: Ekstrakurikuler](#modul-05-ekstrakurikuler-extracurriculars) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 07: Profil Pengguna ➡](#modul-07-profil-pengguna-profiles)
 
 ---
 
 ### Modul 07: Profil Pengguna (`profiles`)
 
-[⬅ Modul 06: Users](#modul-06-users-users) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 08: Dosen ➡](#modul-08-dosen-teachers)
+[⬅ Modul 06: Users](#modul-06-users-users) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 08: Dosen ➡](#modul-08-dosen-teachers)
 
 Profil detail pengguna: nomor HP, alamat, tanggal lahir, dan foto. Relasi `users` ↔ `profiles` adalah **One-to-One**: satu user hanya boleh memiliki satu profil. Modul ini juga mengajarkan **upload file** (foto profil).
 
@@ -6604,13 +5982,13 @@ Jalankan server (`php artisan serve`), buka `http://localhost:8000`, lalu cek sa
 
 - Tampilkan umur pengguna di halaman detail dengan `$profile->birth_date->age`.
 
-[⬅ Modul 06: Users](#modul-06-users-users) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 08: Dosen ➡](#modul-08-dosen-teachers)
+[⬅ Modul 06: Users](#modul-06-users-users) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 08: Dosen ➡](#modul-08-dosen-teachers)
 
 ---
 
 ### Modul 08: Dosen (`teachers`)
 
-[⬅ Modul 07: Profil Pengguna](#modul-07-profil-pengguna-profiles) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 09: Mahasiswa ➡](#modul-09-mahasiswa-students)
+[⬅ Modul 07: Profil Pengguna](#modul-07-profil-pengguna-profiles) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 09: Mahasiswa ➡](#modul-09-mahasiswa-students)
 
 Data dosen. Setiap dosen terhubung ke satu akun user (**One-to-One**) dan satu jurusan (**Many-to-One**), serta memiliki banyak jadwal mengajar (**One-to-Many**).
 
@@ -7151,13 +6529,13 @@ Jalankan server (`php artisan serve`), buka `http://localhost:8000`, lalu cek sa
 
 - Di halaman detail dosen, tampilkan total SKS yang diajar (petunjuk: `$teacher->schedules->sum(fn ($s) => $s->course->credits)`).
 
-[⬅ Modul 07: Profil Pengguna](#modul-07-profil-pengguna-profiles) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 09: Mahasiswa ➡](#modul-09-mahasiswa-students)
+[⬅ Modul 07: Profil Pengguna](#modul-07-profil-pengguna-profiles) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 09: Mahasiswa ➡](#modul-09-mahasiswa-students)
 
 ---
 
 ### Modul 09: Mahasiswa (`students`)
 
-[⬅ Modul 08: Dosen](#modul-08-dosen-teachers) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 10: Mata Kuliah ➡](#modul-10-mata-kuliah-courses)
+[⬅ Modul 08: Dosen](#modul-08-dosen-teachers) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 10: Mata Kuliah ➡](#modul-10-mata-kuliah-courses)
 
 Data mahasiswa, modul dengan relasi terbanyak: One-to-One ke user, Many-to-One ke jurusan, Many-to-Many ke mata kuliah (lewat `enrollments`) dan ke ekstrakurikuler (lewat `extracurricular_student`), serta One-to-Many ke nilai.
 
@@ -7859,13 +7237,13 @@ Jalankan server (`php artisan serve`), buka `http://localhost:8000`, lalu cek sa
 
 - Tolak pendaftaran ekstrakurikuler yang kuotanya sudah penuh (bandingkan `students()->count()` dengan `max_members`).
 
-[⬅ Modul 08: Dosen](#modul-08-dosen-teachers) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 10: Mata Kuliah ➡](#modul-10-mata-kuliah-courses)
+[⬅ Modul 08: Dosen](#modul-08-dosen-teachers) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 10: Mata Kuliah ➡](#modul-10-mata-kuliah-courses)
 
 ---
 
 ### Modul 10: Mata Kuliah (`courses`)
 
-[⬅ Modul 09: Mahasiswa](#modul-09-mahasiswa-students) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 11: Jadwal Perkuliahan ➡](#modul-11-jadwal-perkuliahan-schedules)
+[⬅ Modul 09: Mahasiswa](#modul-09-mahasiswa-students) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 11: Jadwal Perkuliahan ➡](#modul-11-jadwal-perkuliahan-schedules)
 
 Data mata kuliah. Mata kuliah memiliki kategori dan jurusan (**Many-to-One**), serta tag (**Many-to-Many** lewat `course_tag`). Halaman detailnya menampilkan hampir semua jenis relasi: jadwal, tugas, dan mahasiswa yang mengambil.
 
@@ -8268,7 +7646,7 @@ File: `resources/views/courses/create.blade.php`
 
 **Penjelasan:**
 
-- Kode form ini **sama** dengan contoh di TAHAP 9.2.
+- Form ini menggabungkan **dua dropdown relasi** (Kategori dan Jurusan) dengan **checkbox Many-to-Many** (Tags).
 
 #### Langkah 5: View Show (Read: detail data + relasi)
 
@@ -8540,7 +7918,7 @@ File: `resources/views/courses/edit.blade.php`
 
 **Penjelasan:**
 
-- Checkbox tag yang sudah dipilih diambil dari `$course->tags->pluck('id')->toArray()` (sama dengan TAHAP 11.3).
+- Checkbox tag yang sudah dipilih diambil dari `$course->tags->pluck('id')->toArray()`.
 
 #### Langkah 7: Uji Coba
 
@@ -8559,13 +7937,13 @@ Jalankan server (`php artisan serve`), buka `http://localhost:8000`, lalu cek sa
 
 - Tambahkan filter dropdown kategori di halaman index (petunjuk: `->when($request->category_id, fn ($q, $id) => $q->where('category_id', $id))`).
 
-[⬅ Modul 09: Mahasiswa](#modul-09-mahasiswa-students) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 11: Jadwal Perkuliahan ➡](#modul-11-jadwal-perkuliahan-schedules)
+[⬅ Modul 09: Mahasiswa](#modul-09-mahasiswa-students) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 11: Jadwal Perkuliahan ➡](#modul-11-jadwal-perkuliahan-schedules)
 
 ---
 
 ### Modul 11: Jadwal Perkuliahan (`schedules`)
 
-[⬅ Modul 10: Mata Kuliah](#modul-10-mata-kuliah-courses) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 12: Enrollment (KRS) ➡](#modul-12-enrollment-krs-enrollments)
+[⬅ Modul 10: Mata Kuliah](#modul-10-mata-kuliah-courses) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 12: Enrollment (KRS) ➡](#modul-12-enrollment-krs-enrollments)
 
 Jadwal perkuliahan menghubungkan tiga tabel sekaligus: mata kuliah, dosen, dan ruangan (semuanya **Many-to-One**).
 
@@ -9138,13 +8516,13 @@ Jalankan server (`php artisan serve`), buka `http://localhost:8000`, lalu cek sa
 
 - Tolak jadwal yang bentrok: ruangan sama, hari sama, dan jam beririsan (petunjuk: `where('start_time', '<', $end)->where('end_time', '>', $start)`).
 
-[⬅ Modul 10: Mata Kuliah](#modul-10-mata-kuliah-courses) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 12: Enrollment (KRS) ➡](#modul-12-enrollment-krs-enrollments)
+[⬅ Modul 10: Mata Kuliah](#modul-10-mata-kuliah-courses) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 12: Enrollment (KRS) ➡](#modul-12-enrollment-krs-enrollments)
 
 ---
 
 ### Modul 12: Enrollment (KRS) (`enrollments`)
 
-[⬅ Modul 11: Jadwal Perkuliahan](#modul-11-jadwal-perkuliahan-schedules) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 13: Tugas ➡](#modul-13-tugas-assignments)
+[⬅ Modul 11: Jadwal Perkuliahan](#modul-11-jadwal-perkuliahan-schedules) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 13: Tugas ➡](#modul-13-tugas-assignments)
 
 Enrollment (Kartu Rencana Studi) adalah **tabel pivot** Many-to-Many antara mahasiswa dan mata kuliah. Karena memiliki model sendiri (`Enrollment`) dan kolom tambahan (tahun ajaran, semester, status), tabel pivot ini bisa di-CRUD seperti tabel biasa.
 
@@ -9750,13 +9128,13 @@ Jalankan server (`php artisan serve`), buka `http://localhost:8000`, lalu cek sa
 
 - Batasi total SKS per mahasiswa per semester maksimal 24.
 
-[⬅ Modul 11: Jadwal Perkuliahan](#modul-11-jadwal-perkuliahan-schedules) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 13: Tugas ➡](#modul-13-tugas-assignments)
+[⬅ Modul 11: Jadwal Perkuliahan](#modul-11-jadwal-perkuliahan-schedules) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 13: Tugas ➡](#modul-13-tugas-assignments)
 
 ---
 
 ### Modul 13: Tugas (`assignments`)
 
-[⬅ Modul 12: Enrollment (KRS)](#modul-12-enrollment-krs-enrollments) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 14: Pengumpulan Tugas ➡](#modul-14-pengumpulan-tugas-submissions)
+[⬅ Modul 12: Enrollment (KRS)](#modul-12-enrollment-krs-enrollments) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 14: Pengumpulan Tugas ➡](#modul-14-pengumpulan-tugas-submissions)
 
 Data tugas per mata kuliah. Setiap tugas memiliki banyak pengumpulan (*submissions*).
 
@@ -10269,13 +9647,13 @@ Jalankan server (`php artisan serve`), buka `http://localhost:8000`, lalu cek sa
 
 - Tampilkan sisa waktu menuju deadline memakai `$assignment->due_date->diffForHumans()`.
 
-[⬅ Modul 12: Enrollment (KRS)](#modul-12-enrollment-krs-enrollments) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 14: Pengumpulan Tugas ➡](#modul-14-pengumpulan-tugas-submissions)
+[⬅ Modul 12: Enrollment (KRS)](#modul-12-enrollment-krs-enrollments) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 14: Pengumpulan Tugas ➡](#modul-14-pengumpulan-tugas-submissions)
 
 ---
 
 ### Modul 14: Pengumpulan Tugas (`submissions`)
 
-[⬅ Modul 13: Tugas](#modul-13-tugas-assignments) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 15: Nilai ➡](#modul-15-nilai-grades)
+[⬅ Modul 13: Tugas](#modul-13-tugas-assignments) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 15: Nilai ➡](#modul-15-nilai-grades)
 
 Pengumpulan tugas oleh mahasiswa, lengkap dengan **upload file** tugas dan pemberian nilai.
 
@@ -10893,13 +10271,13 @@ Jalankan server (`php artisan serve`), buka `http://localhost:8000`, lalu cek sa
 
 - Tolak pengumpulan jika mahasiswa belum mengambil (enroll) mata kuliah dari tugas tersebut.
 
-[⬅ Modul 13: Tugas](#modul-13-tugas-assignments) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 15: Nilai ➡](#modul-15-nilai-grades)
+[⬅ Modul 13: Tugas](#modul-13-tugas-assignments) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 15: Nilai ➡](#modul-15-nilai-grades)
 
 ---
 
 ### Modul 15: Nilai (`grades`)
 
-[⬅ Modul 14: Pengumpulan Tugas](#modul-14-pengumpulan-tugas-submissions) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 16: Pengumuman (dengan Policy) ➡](#modul-16-pengumuman-dengan-policy-announcements)
+[⬅ Modul 14: Pengumpulan Tugas](#modul-14-pengumpulan-tugas-submissions) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 16: Pengumuman (dengan Policy) ➡](#modul-16-pengumuman-dengan-policy-announcements)
 
 Nilai mahasiswa per mata kuliah per tahun ajaran (UTS, UAS, dan nilai huruf). Nilai huruf bisa dipilih manual atau **dihitung otomatis** dari rata-rata UTS dan UAS.
 
@@ -11528,13 +10906,13 @@ Jalankan server (`php artisan serve`), buka `http://localhost:8000`, lalu cek sa
 
 - Tampilkan IPK di halaman detail mahasiswa (A=4, AB=3.5, B=3, BC=2.5, C=2, D=1, E=0, dibobot dengan SKS).
 
-[⬅ Modul 14: Pengumpulan Tugas](#modul-14-pengumpulan-tugas-submissions) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · [Modul 16: Pengumuman (dengan Policy) ➡](#modul-16-pengumuman-dengan-policy-announcements)
+[⬅ Modul 14: Pengumpulan Tugas](#modul-14-pengumpulan-tugas-submissions) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [Modul 16: Pengumuman (dengan Policy) ➡](#modul-16-pengumuman-dengan-policy-announcements)
 
 ---
 
 ### Modul 16: Pengumuman (dengan Policy) (`announcements`)
 
-[⬅ Modul 15: Nilai](#modul-15-nilai-grades) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · (modul terakhir) ➡
+[⬅ Modul 15: Nilai](#modul-15-nilai-grades) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [TAHAP 11: Uji Coba Akhir ➡](#tahap-11-uji-coba-akhir--checklist-penyelesaian)
 
 Pengumuman kampus. Berbeda dari 15 modul lain yang memakai Gate `admin`, modul ini memakai **Policy**, yaitu cara Laravel mengelompokkan aturan otorisasi untuk satu model.
 
@@ -12083,11 +11461,292 @@ Jalankan server (`php artisan serve`), buka `http://localhost:8000`, lalu cek sa
 - Ubah policy agar admin hanya bisa mengedit pengumuman yang ia tulis sendiri (`$announcement->user_id === $user->id`).
 - Tampilkan 3 pengumuman terbaru yang sudah dipublikasikan di halaman Dashboard.
 
-[⬅ Modul 15: Nilai](#modul-15-nilai-grades) · [⬆ Daftar Modul](#131-urutan-pengerjaan) · (modul terakhir) ➡
+[⬅ Modul 15: Nilai](#modul-15-nilai-grades) · [⬆ Daftar Modul](#95-urutan-pengerjaan-modul) · [TAHAP 11: Uji Coba Akhir ➡](#tahap-11-uji-coba-akhir--checklist-penyelesaian)
+
+> 🎉 **Selamat, ke-16 modul selesai!** Lanjutkan ke [TAHAP 11: Uji Coba Akhir](#tahap-11-uji-coba-akhir--checklist-penyelesaian) untuk memastikan seluruh aplikasi berjalan dengan benar.
 
 ---
 
-## 📁 Struktur Direktori View Lengkap
+# BAGIAN E: Penyelesaian
+
+## TAHAP 11: Uji Coba Akhir & Checklist Penyelesaian
+
+Setelah ke-16 modul selesai, lakukan pengecekan menyeluruh. Centang setiap poin; jika ada yang gagal, kembali ke tahap yang disebutkan di judul bagiannya.
+
+### Persiapan (TAHAP 1–2)
+- [ ] Install Laravel project baru
+- [ ] Buat database MySQL dan konfigurasi `.env`
+- [ ] Test koneksi database berhasil
+
+### Database: Migration, Model & Seeder (TAHAP 3–5)
+- [ ] Buat/modifikasi 18 file migration
+- [ ] Jalankan `php artisan migrate` berhasil
+- [ ] Buat 16 model dengan relasi Eloquent lengkap
+- [ ] Buat DatabaseSeeder dengan data dummy
+- [ ] Jalankan `php artisan migrate:fresh --seed` berhasil
+
+### Route, Autentikasi & Autorisasi (TAHAP 6–8)
+- [ ] Buat `AuthController` (login, logout)
+- [ ] Buat view login
+- [ ] Setup middleware `auth` di routes
+- [ ] Setup Gate `admin` di `AppServiceProvider`
+- [ ] Tombol Create/Edit/Delete hanya muncul untuk admin (`@can('admin')`)
+- [ ] Method create/store/edit/update/destroy dicek dengan `Gate::authorize('admin')`
+- [ ] Buat `AnnouncementPolicy` dan gunakan untuk modul Pengumuman
+- [ ] Pagination memakai Bootstrap (`Paginator::useBootstrapFive()`)
+- [ ] Jalankan `php artisan storage:link` untuk upload file
+
+### CRUD per Modul (TAHAP 10, ulangi untuk ke-16 modul)
+- [ ] Buat Controller dengan 7 method resource
+- [ ] Route `Route::resource()` sudah terdaftar (TAHAP 6)
+- [ ] Buat view `index.blade.php` — Read (tampil semua data + pagination)
+- [ ] Buat view `create.blade.php` — Create (form tambah dengan validasi)
+- [ ] Buat view `show.blade.php` — Show (detail data + relasi)
+- [ ] Buat view `edit.blade.php` — Edit (form edit dengan old values)
+- [ ] Implementasi Delete (tombol + konfirmasi + method destroy)
+
+### Pengujian Menyeluruh
+- [ ] Login sebagai **admin** → bisa CRUD semua modul
+- [ ] Login sebagai **user** → hanya bisa Read (index & show), tombol C/U/D tersembunyi
+- [ ] Akses halaman tanpa login → redirect ke `/login`
+- [ ] Validasi form berfungsi (tampil pesan error)
+- [ ] Data relasi tampil dengan benar di halaman detail
+- [ ] Pagination berfungsi
+- [ ] Flash message success muncul setelah create/update/delete
+
+> 🏁 Jika semua poin tercentang, **tugas SIAKAD selesai**.
+
+---
+
+# Lampiran
+
+## Lampiran A: Ringkasan Spesifikasi per Modul
+
+Ringkasan ini berguna sebagai **contekan cepat** saat mengerjakan atau memeriksa modul. Kode lengkapnya tetap ada di TAHAP 10. Urutan mengikuti nomor modul.
+
+### A.1 Controller: Validasi & Relasi yang Dimuat
+
+#### 📌 Modul 01: `DepartmentController`
+
+| Aspek         | Detail                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Model         | `Department`                                                             |
+| Validation    | `name` (required), `code` (required, max:10, unique), `description` (nullable) |
+| Relasi Load   | `index`: `withCount(['teachers', 'students', 'courses'])` · `show`: `with(['teachers.user', 'students.user', 'courses'])` |
+
+➡ Kode lengkap: [Modul 01: Jurusan](#modul-01-jurusan-departments)
+
+#### 📌 Modul 02: `CategoryController`
+
+| Aspek         | Detail                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Model         | `Category`                                                               |
+| Validation    | `name` (required), `description` (nullable) |
+| Relasi Load   | `index`: `withCount('courses')` · `show`: `with('courses')` |
+
+➡ Kode lengkap: [Modul 02: Kategori Mata Kuliah](#modul-02-kategori-mata-kuliah-categories)
+
+#### 📌 Modul 03: `ClassroomController`
+
+| Aspek         | Detail                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Model         | `Classroom`                                                              |
+| Validation    | `name` (required), `building` (required), `capacity` (required, integer, min:1) |
+| Relasi Load   | `index`: query biasa · `show`: `with('schedules.course')` |
+
+➡ Kode lengkap: [Modul 03: Ruang Kelas](#modul-03-ruang-kelas-classrooms)
+
+#### 📌 Modul 04: `TagController`
+
+| Aspek         | Detail                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Model         | `Tag`                                                                    |
+| Validation    | `name` (required), `slug` (required, unique) |
+| Relasi Load   | `index`: `withCount('courses')` · `show`: `with('courses')` |
+| Catatan       | Slug bisa di-generate otomatis dari name menggunakan `Str::slug()`. |
+
+➡ Kode lengkap: [Modul 04: Tag Mata Kuliah](#modul-04-tag-mata-kuliah-tags)
+
+#### 📌 Modul 05: `ExtracurricularController`
+
+| Aspek         | Detail                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Model         | `Extracurricular`                                                        |
+| Validation    | `name` (required), `description` (nullable), `max_members` (required, integer, min:1) |
+| Relasi Load   | `index`: `withCount('students')` · `show`: `with('students.user')` |
+
+➡ Kode lengkap: [Modul 05: Ekstrakurikuler](#modul-05-ekstrakurikuler-extracurriculars)
+
+#### 📌 Modul 06: `UserController`
+
+| Aspek         | Detail                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Model         | `User`                                                                   |
+| Validation    | `name` (required), `email` (required, email, unique), `password` (required saat create, nullable saat edit), `role` (required, in:admin,user) |
+| Relasi Load   | `index`: `with('profile')` · `show`: `with(['profile', 'teacher', 'student', 'announcements'])` |
+| Catatan       | Password di-hash saat store/update. Saat update, password hanya diubah jika diisi. |
+
+➡ Kode lengkap: [Modul 06: Users](#modul-06-users-users)
+
+#### 📌 Modul 07: `ProfileController`
+
+| Aspek         | Detail                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Model         | `Profile`                                                                |
+| Validation    | `user_id` (required, exists:users,id), `phone` (nullable, max:20), `address` (nullable), `avatar` (nullable, image), `birth_date` (nullable, date) |
+| Relasi Load   | `index`: `with('user')` · `show`: `with('user')` |
+| Catatan       | Pada form create, tampilkan dropdown daftar user yang belum memiliki profil. Avatar di-upload ke `storage/app/public/avatars` (jalankan `php artisan storage:link`) dan form wajib memakai `enctype="multipart/form-data"`. |
+
+➡ Kode lengkap: [Modul 07: Profil Pengguna](#modul-07-profil-pengguna-profiles)
+
+#### 📌 Modul 08: `TeacherController`
+
+| Aspek         | Detail                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Model         | `Teacher`                                                                |
+| Validation    | `user_id` (required, exists:users,id), `department_id` (required, exists:departments,id), `nip` (required, unique), `specialization` (nullable) |
+| Relasi Load   | `index`: `with(['user', 'department'])` · `show`: `with(['user.profile', 'department', 'schedules.course'])` |
+| Form Data     | Kirim daftar `$users` dan `$departments` ke view create/edit. |
+
+➡ Kode lengkap: [Modul 08: Dosen](#modul-08-dosen-teachers)
+
+#### 📌 Modul 09: `StudentController`
+
+| Aspek         | Detail                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Model         | `Student`                                                                |
+| Validation    | `user_id` (required, exists:users,id), `department_id` (required, exists:departments,id), `nim` (required, unique), `semester` (required, integer, min:1, max:14), `extracurriculars` (nullable, array) |
+| Relasi Load   | `index`: `with(['user', 'department'])` · `show`: `with(['user.profile', 'department', 'courses', 'grades.course', 'extracurriculars'])` |
+| Form Data     | Kirim daftar `$users`, `$departments`, dan `$extracurriculars` ke view create/edit. |
+| Catatan       | Ekstrakurikuler dipilih dengan checkbox (Many-to-Many). Gunakan `attach()` saat store dan `sync()` saat update. |
+
+➡ Kode lengkap: [Modul 09: Mahasiswa](#modul-09-mahasiswa-students)
+
+#### 📌 Modul 10: `CourseController`
+
+| Aspek         | Detail                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Model         | `Course`                                                                 |
+| Validation    | `category_id` (required, exists), `department_id` (required, exists), `code` (required, unique), `name` (required), `credits` (required, integer, min:1, max:6), `description` (nullable), `tags` (nullable, array) |
+| Relasi Load   | `index`: `with(['category', 'department'])` · `show`: `with(['category', 'department', 'tags', 'schedules.teacher', 'assignments'])` |
+| Form Data     | Kirim `$categories`, `$departments`, `$tags` ke view create/edit. |
+| Catatan       | Gunakan `$course->tags()->sync($request->tags)` untuk menyimpan relasi many-to-many dengan tags. |
+
+➡ Kode lengkap: [Modul 10: Mata Kuliah](#modul-10-mata-kuliah-courses)
+
+#### 📌 Modul 11: `ScheduleController`
+
+| Aspek         | Detail                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Model         | `Schedule`                                                               |
+| Validation    | `course_id` (required, exists), `teacher_id` (required, exists), `classroom_id` (required, exists), `day` (required, in:Senin,...,Sabtu), `start_time` (required), `end_time` (required, after:start_time) |
+| Relasi Load   | `index`: `with(['course', 'teacher.user', 'classroom'])` · `show`: sama |
+| Form Data     | Kirim `$courses`, `$teachers`, `$classrooms` ke view create/edit. |
+
+➡ Kode lengkap: [Modul 11: Jadwal Perkuliahan](#modul-11-jadwal-perkuliahan-schedules)
+
+#### 📌 Modul 12: `EnrollmentController`
+
+| Aspek         | Detail                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Model         | `Enrollment`                                                             |
+| Validation    | `student_id` (required, exists), `course_id` (required, exists), `academic_year` (required, max:9), `semester` (required, in:Ganjil,Genap), `status` (required, in:active,dropped,completed) |
+| Relasi Load   | `index`: `with(['student.user', 'course'])` · `show`: sama |
+| Form Data     | Kirim `$students` (with user name) dan `$courses` ke view create/edit. |
+
+➡ Kode lengkap: [Modul 12: Enrollment (KRS)](#modul-12-enrollment-krs-enrollments)
+
+#### 📌 Modul 13: `AssignmentController`
+
+| Aspek         | Detail                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Model         | `Assignment`                                                             |
+| Validation    | `course_id` (required, exists), `title` (required), `description` (nullable), `due_date` (required, date, after:today) |
+| Relasi Load   | `index`: `with('course')` · `show`: `with(['course', 'submissions.student.user'])` |
+| Form Data     | Kirim `$courses` ke view create/edit. |
+
+➡ Kode lengkap: [Modul 13: Tugas](#modul-13-tugas-assignments)
+
+#### 📌 Modul 14: `SubmissionController`
+
+| Aspek         | Detail                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Model         | `Submission`                                                             |
+| Validation    | `assignment_id` (required, exists), `student_id` (required, exists), `file` (nullable, file, mimes:pdf,doc,docx,zip, max:2048), `notes` (nullable), `submitted_at` (nullable, date), `score` (nullable, numeric, min:0, max:100) |
+| Relasi Load   | `index`: `with(['assignment.course', 'student.user'])` · `show`: sama |
+| Form Data     | Kirim `$assignments` dan `$students` ke view create/edit. |
+| Catatan       | File di-upload ke `storage/app/public/submissions`, path-nya disimpan di kolom `file_path`. |
+
+➡ Kode lengkap: [Modul 14: Pengumpulan Tugas](#modul-14-pengumpulan-tugas-submissions)
+
+#### 📌 Modul 15: `GradeController`
+
+| Aspek         | Detail                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Model         | `Grade`                                                                  |
+| Validation    | `student_id` (required, exists), `course_id` (required, exists), `academic_year` (required), `midterm_score` (nullable, numeric, min:0, max:100), `final_score` (nullable, numeric, min:0, max:100), `grade_letter` (nullable, in:A,AB,B,BC,C,D,E) |
+| Relasi Load   | `index`: `with(['student.user', 'course'])` · `show`: sama |
+| Form Data     | Kirim `$students` dan `$courses` ke view create/edit. |
+| Catatan       | Jika `grade_letter` dikosongkan, nilai huruf dihitung otomatis dari rata-rata UTS & UAS. |
+
+➡ Kode lengkap: [Modul 15: Nilai](#modul-15-nilai-grades)
+
+#### 📌 Modul 16: `AnnouncementController`
+
+| Aspek         | Detail                                                                   |
+|---------------|--------------------------------------------------------------------------|
+| Model         | `Announcement`                                                           |
+| Validation    | `title` (required), `content` (required), `is_published` (boolean) |
+| Relasi Load   | `index`: `with('user')` · `show`: `with('user')` |
+| Catatan       | `user_id` diisi otomatis dari user yang login saat store. Otorisasi memakai **Policy** `AnnouncementPolicy` (bukan Gate `admin`), dan user biasa hanya melihat pengumuman yang sudah dipublikasikan. |
+
+➡ Kode lengkap: [Modul 16: Pengumuman (dengan Policy)](#modul-16-pengumuman-dengan-policy-announcements)
+
+### A.2 Field pada Form Create & Edit
+
+| Modul              | Tipe Input Field                                                                                                |
+|--------------------|-----------------------------------------------------------------------------------------------------------------|
+| Departments        | `name` (text), `code` (text), `description` (textarea)                                                         |
+| Categories         | `name` (text), `description` (textarea)                                                                        |
+| Classrooms         | `name` (text), `building` (text), `capacity` (number)                                                          |
+| Tags               | `name` (text), `slug` (text, auto-generate dari name)                                                          |
+| Extracurriculars   | `name` (text), `description` (textarea), `max_members` (number)                                                |
+| Users              | `name` (text), `email` (email), `password` (password), `role` (select: admin/user)                              |
+| Profiles           | `user_id` (select dropdown users), `phone` (text), `address` (textarea), `avatar` (file), `birth_date` (date)  |
+| Teachers           | `user_id` (select), `department_id` (select), `nip` (text), `specialization` (text)                            |
+| Students           | `user_id` (select), `department_id` (select), `nim` (text), `semester` (number), `extracurriculars[]` (checkbox) |
+| Courses            | `category_id` (select), `department_id` (select), `code` (text), `name` (text), `credits` (number), `description` (textarea), `tags[]` (checkbox) |
+| Schedules          | `course_id` (select), `teacher_id` (select), `classroom_id` (select), `day` (select), `start_time` (time), `end_time` (time) |
+| Enrollments        | `student_id` (select), `course_id` (select), `academic_year` (text), `semester` (select), `status` (select)    |
+| Assignments        | `course_id` (select), `title` (text), `description` (textarea), `due_date` (datetime-local)                    |
+| Submissions        | `assignment_id` (select), `student_id` (select), `file` (file), `notes` (textarea), `submitted_at` (datetime-local), `score` (number) |
+| Grades             | `student_id` (select), `course_id` (select), `academic_year` (text), `midterm_score` (number), `final_score` (number), `grade_letter` (select, kosong = hitung otomatis) |
+| Announcements      | `title` (text), `content` (textarea), `is_published` (checkbox)                                                |
+
+### A.3 Data yang Ditampilkan di View Show
+
+| Modul              | Data Utama                                                          | Data Relasi yang Ditampilkan                                                     |
+|--------------------|----------------------------------------------------------------------|----------------------------------------------------------------------------------|
+| Departments        | name, code, description                                              | List Teachers, List Students, List Courses                                        |
+| Categories         | name, description                                                    | List Courses                                                                      |
+| Classrooms         | name, building, capacity                                             | List Schedules                                                                    |
+| Tags               | name, slug                                                           | List Courses yang memiliki tag ini                                                |
+| Extracurriculars   | name, description, max_members                                       | List Students (members, with role & joined_at)                                    |
+| Users              | name, email, role, created_at                                        | Profile (phone, address), Teacher/Student data, Announcements list               |
+| Profiles           | phone, address, avatar, birth_date                                   | User (name, email)                                                                |
+| Teachers           | nip, specialization                                                  | User (name, email), Department name, List Schedules                               |
+| Students           | nim, semester                                                        | User (name, email), Department name, List Courses (enrollments), Extracurriculars |
+| Courses            | code, name, credits, description                                     | Category, Department, Tags (badges), List Schedules, List Assignments             |
+| Schedules          | day, start_time, end_time                                            | Course name, Teacher name, Classroom name                                         |
+| Enrollments        | academic_year, semester, status                                      | Student (nim, name), Course (code, name)                                          |
+| Assignments        | title, description, due_date                                         | Course name, List Submissions                                                     |
+| Submissions        | file_path, notes, submitted_at, score                                | Assignment title, Student (nim, name)                                             |
+| Grades             | academic_year, midterm_score, final_score, grade_letter              | Student (nim, name), Course (code, name)                                          |
+| Announcements      | title, content, is_published, created_at                             | User (author name)                                                                |
+
+---
+
+## Lampiran B: Struktur Direktori View Lengkap
 
 ```
 resources/views/
@@ -12180,52 +11839,7 @@ resources/views/
 
 ---
 
-## ✅ Checklist Penyelesaian Tugas
-
-### Tahap Persiapan
-- [ ] Install Laravel project baru
-- [ ] Buat database MySQL dan konfigurasi `.env`
-- [ ] Test koneksi database berhasil
-
-### Tahap Database (Migration & Model)
-- [ ] Buat/modifikasi 18 file migration
-- [ ] Jalankan `php artisan migrate` berhasil
-- [ ] Buat 16 model dengan relasi Eloquent lengkap
-- [ ] Buat DatabaseSeeder dengan data dummy
-- [ ] Jalankan `php artisan migrate:fresh --seed` berhasil
-
-### Tahap Autentikasi & Autorisasi
-- [ ] Buat `AuthController` (login, logout)
-- [ ] Buat view login
-- [ ] Setup middleware `auth` di routes
-- [ ] Setup Gate `admin` di `AppServiceProvider`
-- [ ] Tombol Create/Edit/Delete hanya muncul untuk admin (`@can('admin')`)
-- [ ] Method create/store/edit/update/destroy dicek dengan `Gate::authorize('admin')`
-- [ ] Buat `AnnouncementPolicy` dan gunakan untuk modul Pengumuman
-- [ ] Pagination memakai Bootstrap (`Paginator::useBootstrapFive()`)
-- [ ] Jalankan `php artisan storage:link` untuk upload file
-
-### Tahap CRUD per Modul (ulangi untuk 16 modul, ikuti [TAHAP 13](#tahap-13-kode-lengkap-per-modul))
-- [ ] Buat Controller dengan 7 method resource
-- [ ] Buat route `Route::resource()`
-- [ ] Buat view `index.blade.php` — Read (tampil semua data + pagination)
-- [ ] Buat view `create.blade.php` — Create (form tambah dengan validasi)
-- [ ] Buat view `show.blade.php` — Show (detail data + relasi)
-- [ ] Buat view `edit.blade.php` — Edit (form edit dengan old values)
-- [ ] Implementasi Delete (tombol + konfirmasi + method destroy)
-
-### Testing
-- [ ] Login sebagai **admin** → bisa CRUD semua modul
-- [ ] Login sebagai **user** → hanya bisa Read (index & show), tombol C/U/D tersembunyi
-- [ ] Akses halaman tanpa login → redirect ke `/login`
-- [ ] Validasi form berfungsi (tampil pesan error)
-- [ ] Data relasi tampil dengan benar di halaman detail
-- [ ] Pagination berfungsi
-- [ ] Flash message success muncul setelah create/update/delete
-
----
-
-## 🔑 Ringkasan Teknologi yang Digunakan
+## Lampiran C: Ringkasan Teknologi yang Digunakan
 
 | Komponen            | Teknologi                                |
 |---------------------|------------------------------------------|
